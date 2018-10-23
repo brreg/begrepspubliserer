@@ -17,7 +17,7 @@ public class Application {
 
 
     @Scheduled(fixedRate = 6*60*60*1000L, initialDelay = 0L)
-    public void scheduledExtractFromJira() {
+    public void scheduledExtractFromJira() throws ExtractException {
         LOGGER.debug("Scheduled job triggered");
         EXTRACTOR.extract();
     }

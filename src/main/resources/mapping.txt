@@ -1,0 +1,4 @@
+skos:prefLabel=summary
+skosno:definisjon=customfield_11800
+skos:altLabel=customfield_11806
+skos:hiddenLabel=customfield_11807
