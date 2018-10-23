@@ -1,0 +1,4 @@
+logging:
+  level.: ERROR
+  level.org.springframework: ERROR
+  level.org.springframework.web: ERROR

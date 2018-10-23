@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  begrep-jira-adaptor:
+    restart: always
+    environment:
+     - JAVA_OPTS= -ea -Djava.security.egd=file:/dev/./urandom -Xmx256M -Dspring.profiles.active=docker
