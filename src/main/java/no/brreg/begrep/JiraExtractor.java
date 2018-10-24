@@ -3,6 +3,13 @@ package no.brreg.begrep;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.RIOT;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.SKOS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,9 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -26,12 +31,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class JiraExtractor {
     private static Logger LOGGER = LoggerFactory.getLogger(JiraExtractor.class);
 
+    private static final String BEGREP_URI = "http://brreg.no/begrep/{0}";
+
+    private static final String OUTPUT_JSON_FILENAME = "c:\\temp\\begrep.json";
+    private static final String OUTPUT_RDF_FILENAME  = "c:\\temp\\begrep.rdf";
+    private static final String OUTPUT_TTL_FILENAME  = "c:\\temp\\begrep.ttl";
+
     private static final String JIRA_URL = "https://jira.brreg.no/rest/api/2/search?orderBy=id&jql=project=BEGREP+and+status=\"Godkjent\"&maxResults={0}&startAt={1}";
     private static final String JIRA_USER = System.getenv("JIRA_BEGREP_USER");
     private static final String JIRA_PASSWORD = System.getenv("JIRA_BEGREP_PASSWORD");
-    private static final int JIRA_MAX_RESULTS = 50;
+    private static final int    JIRA_MAX_RESULTS = 50;
 
     private static Map<String,String> fieldMappings = null;
+
+
+    private static Model model = null;
+    private static Property skosPrefLabelProperty    = null;
+    private static Property skosnoDefinisjonProperty = null;
+    private static Property skosAltLabelProperty     = null;
+    private static Property skosHiddenLabelProperty  = null;
 
     private AtomicBoolean isExtracting = new AtomicBoolean(false);
 
@@ -46,6 +64,8 @@ public class JiraExtractor {
                     throw new ExtractException("Failed to load mapping file: "+e.getMessage(), e);
                 }
             }
+
+            initializeStaticModel();
 
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<ObjectNode> response = null;
@@ -87,10 +107,7 @@ public class JiraExtractor {
                     JsonNode issues = objectNode.findValue("issues");
                     if (issues!=null && issues.isArray()) {
                         for (Iterator<JsonNode> it = issues.elements(); it.hasNext(); ) {
-                            JsonNode issue = it.next();
-
-                            LOGGER.info(Integer.toString(currentFetched)+": "+issue.toString());
-
+                            addBegrepToModel(model, it.next());
                             currentFetched++;
                         }
                     }
@@ -102,6 +119,10 @@ public class JiraExtractor {
                 if (totalFetched != totalToFetch) {
                     throw new ExtractException("Expected "+Integer.toString(totalToFetch)+". Got "+Integer.toString(totalFetched));
                 }
+
+                writeModel(model, "RDF/JSON");
+                writeModel(model, "RDF/XML");
+                writeModel(model, "TURTLE");
             }
             catch (ExtractException e) {
                 throw e;
@@ -111,6 +132,41 @@ public class JiraExtractor {
             }
             finally {
                 isExtracting.set(false);
+            }
+        }
+    }
+
+    private void addBegrepToModel(final Model model, final JsonNode jsonNode) {
+        JsonNode idNode = jsonNode.findValue("id");
+        if (idNode==null || idNode.isNull()) {
+            return;
+        }
+
+        Resource begrep = model.createResource(MessageFormat.format(BEGREP_URI, idNode.asText()));
+        if (begrep == null) {
+            return;
+        }
+
+        begrep.addProperty(RDF.type, SKOS.Concept);
+
+        JsonNode fieldsNode = jsonNode.findValue("fields");
+        if (fieldsNode != null) {
+            for (String fieldKey : fieldMappings.keySet()) {
+                String fieldValue = fieldMappings.get(fieldKey);
+                JsonNode fieldNode = fieldsNode.findValue(fieldValue);
+                if (fieldNode==null || fieldNode.isNull()) {
+                    continue;
+                }
+
+                if ("skos:prefLabel".equals(fieldKey)) {
+                    begrep.addProperty(skosPrefLabelProperty, fieldNode.asText());
+                } else if ("skosno:definisjon".equals(fieldKey)) {
+                    begrep.addProperty(skosnoDefinisjonProperty, fieldNode.asText());
+                } else if ("skos:altLabel".equals(fieldKey)) {
+                    begrep.addProperty(skosAltLabelProperty, fieldNode.asText());
+                } else if ("skos:hiddenLabel".equals(fieldKey)) {
+                    begrep.addProperty(skosHiddenLabelProperty, fieldNode.asText());
+                }
             }
         }
     }
@@ -125,6 +181,35 @@ public class JiraExtractor {
                     fieldMappings.put(keyValueArray[0], keyValueArray[1]);
                 }
             }
+        }
+    }
+
+    private void initializeStaticModel() {
+        RIOT.init();
+
+        model = ModelFactory.createDefaultModel();
+        model.setNsPrefix("skos", SKOS.uri);
+        model.setNsPrefix("skosno", "http://difi.no/skosno#");
+        skosPrefLabelProperty    = model.createProperty(SKOS.uri, "prefLabel");
+        skosnoDefinisjonProperty = model.createProperty("http://difi.no/skosno#", "definisjon");
+        skosAltLabelProperty     = model.createProperty(SKOS.uri, "altLabel");
+        skosHiddenLabelProperty  = model.createProperty(SKOS.uri, "hiddenLabel");
+    }
+
+    private void writeModel(final Model model, final String format) throws IOException {
+        if ("RDF/JSON".equals(format)) {
+            writeModel(model, format, OUTPUT_JSON_FILENAME, ".json");
+        } else if ("RDF/XML".equals(format)) {
+            writeModel(model, format, OUTPUT_RDF_FILENAME, ".rdf");
+        } else if ("TURTLE".equals(format)) {
+            writeModel(model, format, OUTPUT_TTL_FILENAME, ".ttl");
+        }
+    }
+
+    private void writeModel(final Model model, final String format, final String filename, final String extension) throws IOException {
+        File tmpFile = File.createTempFile("begrep_", extension);
+        try (OutputStream os = new FileOutputStream(tmpFile)) {
+            model.write(os, format);
         }
     }
 
