@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 
 public class JiraExtractor {
@@ -50,6 +51,8 @@ public class JiraExtractor {
     private static Property skosnoDefinisjonProperty = null;
     private static Property skosAltLabelProperty     = null;
     private static Property skosHiddenLabelProperty  = null;
+
+    private static final Pattern STRIP_JIRA_LINKS_PATTERN = Pattern.compile("\\[(.*?)\\|.*?\\]");
 
     private AtomicBoolean isExtracting = new AtomicBoolean(false);
 
@@ -161,7 +164,7 @@ public class JiraExtractor {
                 if ("skos:prefLabel".equals(fieldKey)) {
                     begrep.addProperty(skosPrefLabelProperty, fieldNode.asText());
                 } else if ("skosno:definisjon".equals(fieldKey)) {
-                    begrep.addProperty(skosnoDefinisjonProperty, fieldNode.asText());
+                    begrep.addProperty(skosnoDefinisjonProperty, stripJiraLinks(fieldNode.asText()));
                 } else if ("skos:altLabel".equals(fieldKey)) {
                     begrep.addProperty(skosAltLabelProperty, fieldNode.asText());
                 } else if ("skos:hiddenLabel".equals(fieldKey)) {
@@ -169,6 +172,13 @@ public class JiraExtractor {
                 }
             }
         }
+    }
+
+    private String stripJiraLinks(final String text) {
+        if (text.indexOf('[') == -1) {
+            return text;
+        }
+        return STRIP_JIRA_LINKS_PATTERN.matcher(text).replaceAll("$1");
     }
 
     private void loadMappings() throws IOException {
