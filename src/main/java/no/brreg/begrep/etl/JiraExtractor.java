@@ -1,7 +1,10 @@
-package no.brreg.begrep;
+package no.brreg.begrep.etl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import no.brreg.begrep.Application;
+import no.brreg.begrep.controller.BegrepController;
+import no.brreg.begrep.exceptions.ExtractException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -17,10 +20,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeType;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,11 +37,11 @@ import java.util.regex.Pattern;
 public class JiraExtractor {
     private static Logger LOGGER = LoggerFactory.getLogger(JiraExtractor.class);
 
-    private static final String BEGREP_URI = "http://brreg.no/begrep/{0}";
+    private static final String JSON_FORMAT   = "RDF/JSON";
+    private static final String RDF_FORMAT    = "RDF/XML";
+    private static final String TURTLE_FORMAT = "TURTLE";
 
-    private static final String OUTPUT_JSON_FILENAME = "c:\\temp\\begrep.json";
-    private static final String OUTPUT_RDF_FILENAME  = "c:\\temp\\begrep.rdf";
-    private static final String OUTPUT_TTL_FILENAME  = "c:\\temp\\begrep.ttl";
+    private static final String BEGREP_URI = "http://data.brreg.no/begrep/{0}";
 
     private static final String JIRA_URL = "https://jira.brreg.no/rest/api/2/search?orderBy=id&jql=project=BEGREP+and+status=\"Godkjent\"&maxResults={0}&startAt={1}";
     private static final String JIRA_USER = System.getenv("JIRA_BEGREP_USER");
@@ -123,9 +128,9 @@ public class JiraExtractor {
                     throw new ExtractException("Expected "+Integer.toString(totalToFetch)+". Got "+Integer.toString(totalFetched));
                 }
 
-                writeModel(model, "RDF/JSON");
-                writeModel(model, "RDF/XML");
-                writeModel(model, "TURTLE");
+                dumpModel(model, BegrepController.JSON_MIMETYPE);
+                dumpModel(model, BegrepController.RDF_MIMETYPE);
+                dumpModel(model, BegrepController.TURTLE_MIMETYPE);
             }
             catch (ExtractException e) {
                 throw e;
@@ -181,9 +186,21 @@ public class JiraExtractor {
         return STRIP_JIRA_LINKS_PATTERN.matcher(text).replaceAll("$1");
     }
 
+    private static String mimeTypeToFormat(final MimeType mimeType) {
+        if (BegrepController.JSON_MIMETYPE.equals(mimeType)) {
+            return JSON_FORMAT;
+        } else if (BegrepController.RDF_MIMETYPE.equals(mimeType)) {
+            return RDF_FORMAT;
+        } else if (BegrepController.TURTLE_MIMETYPE.equals(mimeType)) {
+            return TURTLE_FORMAT;
+        } else {
+            return null;
+        }
+    }
+
     private void loadMappings() throws IOException {
         fieldMappings = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("mapping.txt"), "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("mapping.txt"), StandardCharsets.UTF_8))) {
             String s;
             while ((s=reader.readLine()) != null) {
                 String[] keyValueArray = s.split("=");
@@ -206,20 +223,10 @@ public class JiraExtractor {
         skosHiddenLabelProperty  = model.createProperty(SKOS.uri, "hiddenLabel");
     }
 
-    private void writeModel(final Model model, final String format) throws IOException {
-        if ("RDF/JSON".equals(format)) {
-            writeModel(model, format, OUTPUT_JSON_FILENAME, ".json");
-        } else if ("RDF/XML".equals(format)) {
-            writeModel(model, format, OUTPUT_RDF_FILENAME, ".rdf");
-        } else if ("TURTLE".equals(format)) {
-            writeModel(model, format, OUTPUT_TTL_FILENAME, ".ttl");
-        }
-    }
-
-    private void writeModel(final Model model, final String format, final String filename, final String extension) throws IOException {
-        File tmpFile = File.createTempFile("begrep_", extension);
-        try (OutputStream os = new FileOutputStream(tmpFile)) {
-            model.write(os, format);
+    private void dumpModel(final Model model, final MimeType mimeType) throws IOException {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            model.write(baos, mimeTypeToFormat(mimeType));
+            Application.updateBegrepDump(mimeType, new String(baos.toByteArray(), StandardCharsets.UTF_8));
         }
     }
 

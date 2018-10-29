@@ -1,4 +1,4 @@
-package no.brreg.begrep;
+package no.brreg.begrep.exceptions;
 
 public class ExtractException extends Exception {
 
