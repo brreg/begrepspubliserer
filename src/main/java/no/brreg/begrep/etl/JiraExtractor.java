@@ -61,6 +61,16 @@ public class JiraExtractor {
 
     private AtomicBoolean isExtracting = new AtomicBoolean(false);
 
+    private final Application application;
+
+
+    private JiraExtractor() {
+        this.application = null;
+    }
+
+    public JiraExtractor(final Application application) {
+        this.application = application;
+    }
 
     public void extract() throws ExtractException {
         boolean isAlreadyExtracting = isExtracting.getAndSet(true);
@@ -75,7 +85,7 @@ public class JiraExtractor {
 
             initializeStaticModel();
 
-            RestTemplate restTemplate = new RestTemplate();
+            RestTemplate restTemplate = createRestTemplate();
             ResponseEntity<ObjectNode> response = null;
 
             try {
@@ -226,8 +236,12 @@ public class JiraExtractor {
     private void dumpModel(final Model model, final MimeType mimeType) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             model.write(baos, mimeTypeToFormat(mimeType));
-            Application.updateBegrepDump(mimeType, new String(baos.toByteArray(), StandardCharsets.UTF_8));
+            application.updateBegrepDump(mimeType, new String(baos.toByteArray(), StandardCharsets.UTF_8));
         }
+    }
+
+    RestTemplate createRestTemplate() {
+        return new RestTemplate();
     }
 
 }

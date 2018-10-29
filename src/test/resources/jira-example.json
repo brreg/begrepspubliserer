@@ -1,0 +1,274 @@
+{
+    "expand": "names,schema",
+    "startAt": 0,
+    "maxResults": 1,
+    "total": 101,
+    "issues": [
+        {
+            "expand": "operations,versionedRepresentations,editmeta,changelog,renderedFields",
+            "id": "57994",
+            "self": "https://jira.brreg.no/rest/api/2/issue/57994",
+            "key": "BEGREP-501",
+            "fields": {
+                "customfield_13102": "Visma eAccounting [Internett]. Tilgjengelig fra [http://www.visma.no/eaccounting/regnskapsordbok/t/transaksjon] [Lest 21. juni 2018].\r\n\r\nWikipedia [Internett]. Tilgjengelig fra [https://no.wikipedia.org/wiki/Transaksjon] [Lest 21. juni 2018].\r\n\r\n \r\n\r\n ",
+                "fixVersions": [],
+                "customfield_13101": "Visma eAccounting [Internett]_._ Tilgjengelig fra [http://www.visma.no/eaccounting/regnskapsordbok/t/transaksjon] [Lest 21. juni 2018].\r\n\r\n ",
+                "customfield_13104": {
+                    "self": "https://jira.brreg.no/rest/api/2/user?username=fag",
+                    "name": "fag",
+                    "key": "fag",
+                    "emailAddress": "mail1@brreg.no",
+                    "avatarUrls": {
+                        "48x48": "https://www.gravatar.com/avatar/939f1da9b34800172f560888f3f8fbeb?d=mm&s=48",
+                        "24x24": "https://www.gravatar.com/avatar/939f1da9b34800172f560888f3f8fbeb?d=mm&s=24",
+                        "16x16": "https://www.gravatar.com/avatar/939f1da9b34800172f560888f3f8fbeb?d=mm&s=16",
+                        "32x32": "https://www.gravatar.com/avatar/939f1da9b34800172f560888f3f8fbeb?d=mm&s=32"
+                    },
+                    "displayName": "Doe, John1",
+                    "active": true,
+                    "timeZone": "Europe/Oslo"
+                },
+                "customfield_13500": "{summaryBean=com.atlassian.jira.plugin.devstatus.rest.SummaryBean@58f45377[summary={pullrequest=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@312bc3c7[overall=com.atlassian.jira.plugin.devstatus.summary.beans.PullRequestOverallBean@28781e4c[stateCount=0,state=OPEN,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}], build=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@30b1c2c2[overall=com.atlassian.jira.plugin.devstatus.summary.beans.BuildOverallBean@4a244048[failedBuildCount=0,successfulBuildCount=0,unknownBuildCount=0,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}], review=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@25fe9730[overall=com.atlassian.jira.plugin.devstatus.summary.beans.ReviewsOverallBean@4d1c67bd[stateCount=0,state=<null>,dueDate=<null>,overDue=false,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}], deployment-environment=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@73051b0e[overall=com.atlassian.jira.plugin.devstatus.summary.beans.DeploymentOverallBean@1bcb2326[topEnvironments=[],showProjects=false,successfulCount=0,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}], repository=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@4a5d7078[overall=com.atlassian.jira.plugin.devstatus.summary.beans.CommitOverallBean@64d2c701[count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}], branch=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@3fd47dfe[overall=com.atlassian.jira.plugin.devstatus.summary.beans.BranchOverallBean@7d44ab31[count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}]},errors=[],configErrors=[]], devSummaryJson={\"cachedValue\":{\"errors\":[],\"configErrors\":[],\"summary\":{\"pullrequest\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"stateCount\":0,\"state\":\"OPEN\",\"open\":true},\"byInstanceType\":{}},\"build\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"failedBuildCount\":0,\"successfulBuildCount\":0,\"unknownBuildCount\":0},\"byInstanceType\":{}},\"review\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"stateCount\":0,\"state\":null,\"dueDate\":null,\"overDue\":false,\"completed\":false},\"byInstanceType\":{}},\"deployment-environment\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"topEnvironments\":[],\"showProjects\":false,\"successfulCount\":0},\"byInstanceType\":{}},\"repository\":{\"overall\":{\"count\":0,\"lastUpdated\":null},\"byInstanceType\":{}},\"branch\":{\"overall\":{\"count\":0,\"lastUpdated\":null},\"byInstanceType\":{}}}},\"isStale\":true}}",
+                "customfield_11201": "1|o00hio:",
+                "resolution": null,
+                "customfield_13103": null,
+                "customfield_13106": [
+                    {
+                        "self": "https://jira.brreg.no/rest/api/2/customFieldOption/11418",
+                        "value": "BRsys: Fellesmodul Økonomi",
+                        "id": "11418"
+                    }
+                ],
+                "customfield_13105": null,
+                "customfield_12800": "2018-08-24",
+                "lastViewed": null,
+                "customfield_14020": null,
+                "customfield_12000": null,
+                "customfield_12002": null,
+                "customfield_14023": null,
+                "customfield_10100": null,
+                "priority": {
+                    "self": "https://jira.brreg.no/rest/api/2/priority/6",
+                    "iconUrl": "https://jira.brreg.no/images/icons/priority_major.gif",
+                    "name": "Normal",
+                    "id": "6"
+                },
+                "customfield_12400": null,
+                "labels": [],
+                "customfield_11700": null,
+                "aggregatetimeoriginalestimate": null,
+                "timeestimate": null,
+                "versions": [],
+                "issuelinks": [],
+                "assignee": {
+                    "self": "https://jira.brreg.no/rest/api/2/user?username=ini",
+                    "name": "ini",
+                    "key": "ini",
+                    "emailAddress": "mail2@brreg.no",
+                    "avatarUrls": {
+                        "48x48": "https://www.gravatar.com/avatar/86d4b8323ed16cf9689d1ced4ee4549c?d=mm&s=48",
+                        "24x24": "https://www.gravatar.com/avatar/86d4b8323ed16cf9689d1ced4ee4549c?d=mm&s=24",
+                        "16x16": "https://www.gravatar.com/avatar/86d4b8323ed16cf9689d1ced4ee4549c?d=mm&s=16",
+                        "32x32": "https://www.gravatar.com/avatar/86d4b8323ed16cf9689d1ced4ee4549c?d=mm&s=32"
+                    },
+                    "displayName": "Doe, Jane1",
+                    "active": true,
+                    "timeZone": "Europe/Oslo"
+                },
+                "status": {
+                    "self": "https://jira.brreg.no/rest/api/2/status/10716",
+                    "description": "Godkjent",
+                    "iconUrl": "https://jira.brreg.no/images/icons/statuses/generic.png",
+                    "name": "Godkjent",
+                    "id": "10716",
+                    "statusCategory": {
+                        "self": "https://jira.brreg.no/rest/api/2/statuscategory/3",
+                        "id": 3,
+                        "key": "done",
+                        "colorName": "green",
+                        "name": "Utført"
+                    }
+                },
+                "components": [],
+                "customfield_14011": null,
+                "customfield_14012": null,
+                "customfield_14013": null,
+                "customfield_14018": null,
+                "customfield_11300": null,
+                "customfield_14019": null,
+                "customfield_14016": null,
+                "customfield_13600": null,
+                "customfield_14017": null,
+                "customfield_12502": null,
+                "aggregatetimeestimate": null,
+                "creator": {
+                    "self": "https://jira.brreg.no/rest/api/2/user?username=het",
+                    "name": "het",
+                    "key": "het",
+                    "emailAddress": "mail3@brreg.no",
+                    "avatarUrls": {
+                        "48x48": "https://jira.brreg.no/secure/useravatar?ownerId=het&avatarId=13227",
+                        "24x24": "https://jira.brreg.no/secure/useravatar?size=small&ownerId=het&avatarId=13227",
+                        "16x16": "https://jira.brreg.no/secure/useravatar?size=xsmall&ownerId=het&avatarId=13227",
+                        "32x32": "https://jira.brreg.no/secure/useravatar?size=medium&ownerId=het&avatarId=13227"
+                    },
+                    "displayName": "Doe, John2",
+                    "active": true,
+                    "timeZone": "Europe/Oslo"
+                },
+                "customfield_14000": null,
+                "subtasks": [],
+                "customfield_14004": null,
+                "reporter": {
+                    "self": "https://jira.brreg.no/rest/api/2/user?username=het",
+                    "name": "het",
+                    "key": "het",
+                    "emailAddress": "mail4@brreg.no",
+                    "avatarUrls": {
+                        "48x48": "https://jira.brreg.no/secure/useravatar?ownerId=het&avatarId=13227",
+                        "24x24": "https://jira.brreg.no/secure/useravatar?size=small&ownerId=het&avatarId=13227",
+                        "16x16": "https://jira.brreg.no/secure/useravatar?size=xsmall&ownerId=het&avatarId=13227",
+                        "32x32": "https://jira.brreg.no/secure/useravatar?size=medium&ownerId=het&avatarId=13227"
+                    },
+                    "displayName": "Doe, John3",
+                    "active": true,
+                    "timeZone": "Europe/Oslo"
+                },
+                "customfield_11011": null,
+                "customfield_14001": null,
+                "customfield_12100": null,
+                "aggregateprogress": {
+                    "progress": 0,
+                    "total": 0
+                },
+                "customfield_10200": "9223372036854775807",
+                "customfield_14008": null,
+                "customfield_12501": null,
+                "customfield_14005": null,
+                "customfield_12500": null,
+                "customfield_14006": null,
+                "customfield_10710": null,
+                "customfield_10711": null,
+                "customfield_11922": {
+                    "self": "https://jira.brreg.no/rest/api/2/customFieldOption/10608",
+                    "value": "brJEE",
+                    "id": "10608"
+                },
+                "customfield_11801": null,
+                "customfield_10712": null,
+                "customfield_11800": "overførsel i økonomisk sammenheng fra en part til en annen",
+                "customfield_10713": null,
+                "customfield_11803": null,
+                "customfield_10714": null,
+                "customfield_11802": "For eksempel når en vare eller tjeneste byttes mot penger ved kjøp og salg, eller utbetaling av lønn.",
+                "customfield_10715": null,
+                "customfield_11805": {
+                    "self": "https://jira.brreg.no/rest/api/2/customFieldOption/10900",
+                    "value": "VST - Økonomistab",
+                    "id": "10900"
+                },
+                "customfield_10716": null,
+                "customfield_11804": {
+                    "self": "https://jira.brreg.no/rest/api/2/customFieldOption/11739",
+                    "value": "Økonomi",
+                    "id": "11739"
+                },
+                "customfield_11807": null,
+                "customfield_11806": null,
+                "progress": {
+                    "progress": 0,
+                    "total": 0
+                },
+                "votes": {
+                    "self": "https://jira.brreg.no/rest/api/2/issue/BEGREP-501/votes",
+                    "votes": 0,
+                    "hasVoted": false
+                },
+                "issuetype": {
+                    "self": "https://jira.brreg.no/rest/api/2/issuetype/10301",
+                    "id": "10301",
+                    "description": "Begrep",
+                    "iconUrl": "https://jira.brreg.no/secure/viewavatar?size=xsmall&avatarId=11300&avatarType=issuetype",
+                    "name": "Begrep",
+                    "subtask": false,
+                    "avatarId": 11300
+                },
+                "timespent": null,
+                "project": {
+                    "self": "https://jira.brreg.no/rest/api/2/project/12400",
+                    "id": "12400",
+                    "key": "BEGREP",
+                    "name": "BEGREP",
+                    "avatarUrls": {
+                        "48x48": "https://jira.brreg.no/secure/projectavatar?pid=12400&avatarId=12409",
+                        "24x24": "https://jira.brreg.no/secure/projectavatar?size=small&pid=12400&avatarId=12409",
+                        "16x16": "https://jira.brreg.no/secure/projectavatar?size=xsmall&pid=12400&avatarId=12409",
+                        "32x32": "https://jira.brreg.no/secure/projectavatar?size=medium&pid=12400&avatarId=12409"
+                    }
+                },
+                "customfield_13300": null,
+                "aggregatetimespent": null,
+                "customfield_11513": null,
+                "customfield_11512": null,
+                "resolutiondate": null,
+                "workratio": -1,
+                "watches": {
+                    "self": "https://jira.brreg.no/rest/api/2/issue/BEGREP-501/watchers",
+                    "watchCount": 6,
+                    "isWatching": false
+                },
+                "created": "2018-05-30T11:01:21.000+0200",
+                "customfield_12200": null,
+                "customfield_12202": null,
+                "customfield_11511": null,
+                "customfield_10300": "9223372036854775807",
+                "customfield_11510": null,
+                "customfield_10301": null,
+                "customfield_12203": null,
+                "customfield_13801": null,
+                "customfield_11501": null,
+                "customfield_13800": null,
+                "customfield_11504": null,
+                "customfield_11900": null,
+                "customfield_13803": null,
+                "customfield_13802": null,
+                "customfield_11506": null,
+                "customfield_11902": null,
+                "customfield_11505": null,
+                "customfield_11901": null,
+                "customfield_11508": null,
+                "customfield_11507": null,
+                "updated": "2018-08-24T12:34:44.000+0200",
+                "timeoriginalestimate": null,
+                "customfield_13001": null,
+                "customfield_13000": null,
+                "description": null,
+                "customfield_11500": null,
+                "customfield_12700": null,
+                "customfield_12304": null,
+                "customfield_10800": null,
+                "summary": "økonomisk transaksjon",
+                "customfield_14201": null,
+                "customfield_14202": null,
+                "customfield_10000": null,
+                "customfield_14200": null,
+                "customfield_10001": null,
+                "customfield_12301": null,
+                "customfield_12300": null,
+                "customfield_12303": null,
+                "customfield_10400": null,
+                "customfield_12302": [],
+                "customfield_11601": [
+                    {
+                        "self": "https://jira.brreg.no/rest/api/2/customFieldOption/10610",
+                        "value": "Annet miljø",
+                        "id": "10610"
+                    }
+                ],
+                "customfield_13900": null,
+                "environment": null,
+                "duedate": null
+            }
+        }
+    ]
+}

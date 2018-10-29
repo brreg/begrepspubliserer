@@ -19,14 +19,15 @@ import java.util.Map;
 public class Application {
     private static Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
-    private static final JiraExtractor EXTRACTOR = new JiraExtractor();
     private static final Map<MimeType,String> begrepDumps = new HashMap<>();
+
+    private final JiraExtractor extractor = new JiraExtractor(this);
 
 
     @Scheduled(fixedRate = 6*60*60*1000L, initialDelay = 0L)
     public void scheduledExtractFromJira() throws ExtractException {
         LOGGER.debug("Scheduled job triggered");
-        EXTRACTOR.extract();
+        extractor.extract();
     }
 
     public static void updateBegrepDump(final MimeType type, final String dump) {
