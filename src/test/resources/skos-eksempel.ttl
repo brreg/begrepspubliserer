@@ -1,0 +1,64 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix xkos: <http://rdf-vocabulary.ddialliance.org/xkos#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix skosno: <http://difi.no/skosno#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+<https://jira.brreg.no/browse/BEGREP-246> a skos:Concept ;
+  dct:identifier <https://jira.brreg.no/browse/BEGREP-246> ;
+  dct:publiser <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> ;
+  skos:example ""@no ;
+  dct:subject "Tvangsfullbyrdelse"@no ;
+  skosno:verdiområde ""@no ;
+  skosno:bruksområde ""@no ;
+  skos:editorialNote ""@no ;
+  dct:temporal [
+    a dct:PeriodOfTime ;
+    schema:startDate ""^^xsd:date ;
+    schema:endDate ""^^xsd:date ;
+  ] ;
+  dcat:contactPoint [
+    a vcard:Organization ;
+    vcard:organizationUnit "RF -Tinglysning og regnskap";
+    vcard:hasEmail <> ;
+    vcard:hasTelephone <> ;
+  ] ;
+  dct:modified "2018-01-01"^^xsd:Date ;
+  # Representasjon av label
+  skosxl:prefLabel [
+    a skosxl:Label ;
+    skosxl:literalForm "Utleggspant"@no ;
+    skosno:termform <> ;
+    dct:modified "2018-01-01"^^xsd:Date ;
+  ] ;
+  skosxl:altLabel <>;
+  skosxl:hiddenLabel <>;
+  # Representasjon av betydningsbeskrivelse (her Definisjon) som muliggjør målgruppe m.m.
+  skosno:betydningsbeskrivelse [
+    a skosno:Definisjon ;
+    rdfs:label ""@no ;
+    dct:type <> ;
+    dct:source [
+      rdfs:label "Lov om pant (panteloven) § 5-1"@no ;
+      rdfs:seeAlso <https://lovdata.no/NL/lov/1980-02-08-2/§5-1> ;
+    ] ;
+    skos:scopeNote ""@no;
+    dct:audience <>;
+    dct:modified "2018-01-01"^^xsd:Date ;
+  ];
+  # Representasjon av begrepsrepresentasjon som muliggjør navngiving m.m.
+  skosno:begrepsrelasjon [
+    a skosno:AssosiativRelasjon ;
+    dct:description ""@no ;
+    dct:modified "2018-01-01"^^xsd:Date ;
+    skosno:assosiertBegrep <https://jira.brreg.no/browse/BEGREP-220> ; # Namsmyndighet
+  ];
+  dct:replaces <> ;
+  dct:replacedBy <>;
+  skos:scopeNote ""@no ;
+.
