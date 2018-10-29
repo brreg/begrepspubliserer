@@ -48,7 +48,7 @@ public class BegrepController {
         }
     }
 
-    private MimeType negotiateMimeType(final String acceptHeader) {
+    MimeType negotiateMimeType(final String acceptHeader) {
         if (acceptHeader==null || acceptHeader.isEmpty()) {
             return null;
         }
