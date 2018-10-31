@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>no.brreg</groupId>
-    <artifactId>begrep-jira-adaptor</artifactId>
+    <artifactId>begrepspubliserer</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -23,7 +23,7 @@
         <maven.exec.skip>false</maven.exec.skip>
         <!--end standard properties-->
 
-        <docker.image.prefix>${project.groupId}</docker.image.prefix>
+        <docker.image.prefix>informasjonsforvaltning</docker.image.prefix>
         <docker.registry/>
     </properties>
 
