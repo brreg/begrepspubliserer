@@ -1,4 +1,5 @@
-skos:prefLabel=summary
-skosno:definisjon=customfield_11800
-skos:altLabel=customfield_11806
-skos:hiddenLabel=customfield_11807
+summary=skos:prefLabel@nb
+customfield_11800=skosno:definisjon@nb
+customfield_12501=skosno:definisjon@nn
+customfield_11806=skos:altLabel@nb
+customfield_11807=skos:hiddenLabel@nb

@@ -24,7 +24,6 @@ import org.springframework.util.MimeType;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -37,21 +36,46 @@ import java.util.regex.Pattern;
 public class JiraExtractor {
     private static Logger LOGGER = LoggerFactory.getLogger(JiraExtractor.class);
 
+    private static final String RDF_NS     = "rdf";
+    private static final String RDF_URI    = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    private static final String RDFS_NS    = "rdfs";
+    private static final String RDFS_URI   = "http://www.w3.org/2000/01/rdf-schema#";
+    private static final String SKOS_NS    = "skos";
+    private static final String SKOS_URI   = "http://www.w3.org/2004/02/skos/core#";
+    private static final String DCT_NS     = "dct";
+    private static final String DCT_URI    = "http://purl.org/dc/terms/";
+    private static final String SKOSXL_NS  = "skosxl";
+    private static final String SKOSXL_URI = "http://www.w3.org/2008/05/skos-xl#";
+    private static final String XKOS_NS    = "xkos";
+    private static final String XKOS_URI   = "http://rdf-vocabulary.ddialliance.org/xkos#";
+    private static final String DCAT_NS    = "dcat";
+    private static final String DCAT_URI   = "http://www.w3.org/ns/dcat#";
+    private static final String SKOSNO_NS  = "skosno";
+    private static final String SKOSNO_URI = "http://difi.no/skosno#";
+    private static final String SCHEMA_NS  = "schema";
+    private static final String SCHEMA_URI = "http://schema.org/";
+    private static final String XSD_NS     = "xsd";
+    private static final String XSD_URI    = "http://www.w3.org/2001/XMLSchema#";
+    private static final String VCARD_NS   = "vcard";
+    private static final String VCARD_URI  = "http://www.w3.org/2006/vcard/ns#";
+
     private static final String JSON_FORMAT   = "RDF/JSON";
     private static final String RDF_FORMAT    = "RDF/XML";
     private static final String TURTLE_FORMAT = "TURTLE";
 
     private static final String BEGREP_URI = "http://data.brreg.no/begrep/{0}";
+    private static final String JIRA_URI = "https://jira.brreg.no/rest/api/2/issue/{0}";
 
     private static final String JIRA_URL = "https://jira.brreg.no/rest/api/2/search?orderBy=id&jql=project=BEGREP+and+status=\"Godkjent\"&maxResults={0}&startAt={1}";
     private static final String JIRA_USER = System.getenv("JIRA_BEGREP_USER");
     private static final String JIRA_PASSWORD = System.getenv("JIRA_BEGREP_PASSWORD");
     private static final int    JIRA_MAX_RESULTS = 50;
 
-    private static Map<String,String> fieldMappings = null;
+    private static Map<String,Mapping> fieldMappings = null;
 
 
     private static Model model = null;
+    private static Property dctIdentifierProperty    = null;
     private static Property skosPrefLabelProperty    = null;
     private static Property skosnoDefinisjonProperty = null;
     private static Property skosAltLabelProperty     = null;
@@ -74,7 +98,7 @@ public class JiraExtractor {
 
     public void extract() throws ExtractException {
         boolean isAlreadyExtracting = isExtracting.getAndSet(true);
-        if (isAlreadyExtracting == false) { //If it isn't already extracting, extract (and make sure isExtracting is reset in the end)
+        if (!isAlreadyExtracting) { //If it isn't already extracting, extract (and make sure isExtracting is reset in the end)
             if (fieldMappings == null) {
                 try {
                     loadMappings();
@@ -90,8 +114,8 @@ public class JiraExtractor {
 
             try {
                 HttpHeaders customHeaders = new HttpHeaders();
-                byte[] encodedAuth = Base64.encodeBase64((JIRA_USER+":"+JIRA_PASSWORD).getBytes(Charset.forName("US-ASCII")) );
-                String authHeader = "Basic " + new String(encodedAuth, "US-ASCII");
+                byte[] encodedAuth = Base64.encodeBase64((JIRA_USER+":"+JIRA_PASSWORD).getBytes(StandardCharsets.US_ASCII) );
+                String authHeader = "Basic " + new String(encodedAuth, StandardCharsets.US_ASCII);
                 customHeaders.set("Authorization", authHeader);
 
                 int startAt = 0;
@@ -164,26 +188,28 @@ public class JiraExtractor {
         if (begrep == null) {
             return;
         }
-
         begrep.addProperty(RDF.type, SKOS.Concept);
+        begrep.addProperty(dctIdentifierProperty, MessageFormat.format(JIRA_URI, idNode.asText()));
 
         JsonNode fieldsNode = jsonNode.findValue("fields");
         if (fieldsNode != null) {
-            for (String fieldKey : fieldMappings.keySet()) {
-                String fieldValue = fieldMappings.get(fieldKey);
-                JsonNode fieldNode = fieldsNode.findValue(fieldValue);
+            for (Map.Entry<String,Mapping> fieldMappingEntry : fieldMappings.entrySet()) {
+                JsonNode fieldNode = fieldsNode.findValue(fieldMappingEntry.getKey());
                 if (fieldNode==null || fieldNode.isNull()) {
                     continue;
                 }
 
-                if ("skos:prefLabel".equals(fieldKey)) {
-                    begrep.addProperty(skosPrefLabelProperty, fieldNode.asText());
-                } else if ("skosno:definisjon".equals(fieldKey)) {
-                    begrep.addProperty(skosnoDefinisjonProperty, stripJiraLinks(fieldNode.asText()));
-                } else if ("skos:altLabel".equals(fieldKey)) {
-                    begrep.addProperty(skosAltLabelProperty, fieldNode.asText());
-                } else if ("skos:hiddenLabel".equals(fieldKey)) {
-                    begrep.addProperty(skosHiddenLabelProperty, fieldNode.asText());
+                Mapping fieldMapping = fieldMappingEntry.getValue();
+                String fieldValue = fieldMapping.getField();
+                String language = fieldMapping.getLanguage();
+                if ("skos:prefLabel".equals(fieldValue)) {
+                    begrep.addProperty(skosPrefLabelProperty, fieldNode.asText(), language);
+                } else if ("skosno:definisjon".equals(fieldValue)) {
+                    begrep.addProperty(skosnoDefinisjonProperty, stripJiraLinks(fieldNode.asText()), language);
+                } else if ("skos:altLabel".equals(fieldValue)) {
+                    begrep.addProperty(skosAltLabelProperty, fieldNode.asText(), language);
+                } else if ("skos:hiddenLabel".equals(fieldValue)) {
+                    begrep.addProperty(skosHiddenLabelProperty, fieldNode.asText(), language);
                 }
             }
         }
@@ -214,8 +240,8 @@ public class JiraExtractor {
             String s;
             while ((s=reader.readLine()) != null) {
                 String[] keyValueArray = s.split("=");
-                if (keyValueArray != null && keyValueArray.length >= 2 && !keyValueArray[0].isEmpty() && !keyValueArray[1].isEmpty()) {
-                    fieldMappings.put(keyValueArray[0], keyValueArray[1]);
+                if (keyValueArray.length >= 2 && !keyValueArray[0].isEmpty() && !keyValueArray[1].isEmpty()) {
+                    fieldMappings.put(keyValueArray[0], new Mapping(keyValueArray[1]));
                 }
             }
         }
@@ -225,12 +251,22 @@ public class JiraExtractor {
         RIOT.init();
 
         model = ModelFactory.createDefaultModel();
-        model.setNsPrefix("skos", SKOS.uri);
-        model.setNsPrefix("skosno", "http://difi.no/skosno#");
-        skosPrefLabelProperty    = model.createProperty(SKOS.uri, "prefLabel");
-        skosnoDefinisjonProperty = model.createProperty("http://difi.no/skosno#", "definisjon");
-        skosAltLabelProperty     = model.createProperty(SKOS.uri, "altLabel");
-        skosHiddenLabelProperty  = model.createProperty(SKOS.uri, "hiddenLabel");
+        model.setNsPrefix(RDF_NS,    RDF_URI);
+        model.setNsPrefix(RDFS_NS,   RDFS_URI);
+        model.setNsPrefix(SKOS_NS,   SKOS_URI);
+        model.setNsPrefix(DCT_NS,    DCT_URI);
+        model.setNsPrefix(SKOSXL_NS, SKOSXL_URI);
+        model.setNsPrefix(XKOS_NS,   XKOS_URI);
+        model.setNsPrefix(DCAT_NS,   DCAT_URI);
+        model.setNsPrefix(SKOSNO_NS, SKOSNO_URI);
+        model.setNsPrefix(SCHEMA_NS, SCHEMA_URI);
+        model.setNsPrefix(XSD_NS,    XSD_URI);
+        model.setNsPrefix(VCARD_NS,  VCARD_URI);
+        dctIdentifierProperty    = model.createProperty(DCT_URI, "identifier");
+        skosPrefLabelProperty    = model.createProperty(SKOS_URI, "prefLabel");
+        skosnoDefinisjonProperty = model.createProperty(SKOSNO_URI, "definisjon");
+        skosAltLabelProperty     = model.createProperty(SKOS_URI, "altLabel");
+        skosHiddenLabelProperty  = model.createProperty(SKOS_URI, "hiddenLabel");
     }
 
     private void dumpModel(final Model model, final MimeType mimeType) throws IOException {
