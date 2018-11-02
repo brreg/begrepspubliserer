@@ -9,9 +9,9 @@
 @prefix schema: <http://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
-<https://jira.brreg.no/browse/BEGREP-246> a skos:Concept ;
-  dct:identifier <https://jira.brreg.no/browse/BEGREP-246> ;
-  dct:publiser <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> ;
+<https://data.brreg.no/begrep/57994> a skos:Concept ;
+  dct:identifier <https://jira.brreg.no/rest/api/2/issue/57994> ;
+  dct:publisher <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> ;
   skos:example ""@no ;
   dct:subject "Tvangsfullbyrdelse"@no ;
   skosno:verdiområde ""@no ;
@@ -36,11 +36,33 @@
     skosno:termform <> ;
     dct:modified "2018-01-01"^^xsd:Date ;
   ] ;
-  skosxl:altLabel <>;
-  skosxl:hiddenLabel <>;
+  skosxl:altLabel [
+      a skosxl:Label ;
+      skosxl:literalForm "tillattTerm"@no ;
+      skosno:termform <> ;
+      dct:modified ""^^xsd:Date ;
+    ] ;
+  skosxl:hiddenLabel [
+     a skosxl:Label ;
+     skosxl:literalForm "frarådetTerm"@no ;
+     skosno:termform <> ;
+     dct:modified ""^^xsd:Date ;
+   ] ;
   # Representasjon av betydningsbeskrivelse (her Definisjon) som muliggjør målgruppe m.m.
   skosno:betydningsbeskrivelse [
     a skosno:Definisjon ;
+    rdfs:label ""@no ;
+    dct:type <> ;
+    dct:source [
+      rdfs:label "Lov om pant (panteloven) § 5-1"@no ;
+      rdfs:seeAlso <https://lovdata.no/NL/lov/1980-02-08-2/§5-1> ;
+    ] ;
+    skos:scopeNote ""@no;
+    dct:audience <>;
+    dct:modified "2018-01-01"^^xsd:Date ;
+  ];
+  skosno:betydningsbeskrivelse [
+    a skosno:AlternativFormulering ;
     rdfs:label ""@no ;
     dct:type <> ;
     dct:source [
@@ -56,7 +78,7 @@
     a skosno:AssosiativRelasjon ;
     dct:description ""@no ;
     dct:modified "2018-01-01"^^xsd:Date ;
-    skosno:assosiertBegrep <https://jira.brreg.no/browse/BEGREP-220> ; # Namsmyndighet
+    skosno:assosiertBegrep <https://data.brreg.no/begrep/57994> ; # Namsmyndighet
   ];
   dct:replaces <> ;
   dct:replacedBy <>;
