@@ -1,5 +1,7 @@
-summary=skos:prefLabel@nb
-customfield_11800=skosno:definisjon@nb
-customfield_12501=skosno:definisjon@nn
-customfield_11806=skos:altLabel@nb
-customfield_11807=skos:hiddenLabel@nb
+summary=Begrep.anbefaltTerm@nb
+customfield_11800=Begrep.definisjon@nb
+customfield_11806=Begrep.tillattTerm@nb
+customfield_11807=Begrep.frarådetTerm@nb
+customfield_12501=Begrep.definisjon@nn
+customfield_13101=Betydningsbeskrivelse.kilde.tekst@nb
+customfield_11804=Begrep.fagområde.tekst@nb
