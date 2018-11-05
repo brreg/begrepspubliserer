@@ -67,7 +67,7 @@ public class JiraExtractor {
     private static final String ANSVARLIG_VIRKSOMHET_ORGNR = System.getenv("ANSVARLIG_VIRKSOMHET_ORGNR");
     private static final String DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR = "974760673";
 
-    private static final String JIRA_URL = "https://jira.brreg.no/rest/api/2/search?orderBy=id&jql=project=BEGREP+and+status=\"Godkjent\"+and+'Offentlig tilgjengelig?'=\"Ja\"&maxResults={0}&startAt={1}";
+    private static final String JIRA_URL = "https://jira.brreg.no/rest/api/2/search?orderBy=id&jql=project=BEGREP+and+status=Godkjent+and+\"Offentlig tilgjengelig?\"=Ja&maxResults={0}&startAt={1}";
     private static final String JIRA_USER = System.getenv("JIRA_BEGREP_USER");
     private static final String JIRA_PASSWORD = System.getenv("JIRA_BEGREP_PASSWORD");
     private static final int JIRA_MAX_RESULTS = 50;
@@ -135,6 +135,7 @@ public class JiraExtractor {
 
                 do {
                     String url = MessageFormat.format(JIRA_URL, JIRA_MAX_RESULTS, startAt);
+                    LOGGER.info("Fetching begrep from Jira: "+url);
                     response = restTemplate.exchange(
                             url,
                             HttpMethod.GET,
