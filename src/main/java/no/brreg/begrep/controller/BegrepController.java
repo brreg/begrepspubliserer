@@ -26,6 +26,11 @@ public class BegrepController {
     private static final String DEFAULT_TEXT = "Please use Accept:-header with mime-type '"+JSON_MIMETYPE+"', '"+RDF_MIMETYPE+"' or '"+TURTLE_MIMETYPE+"'";
 
 
+    @RequestMapping(value="/ping", method=GET, produces={"text/plain"})
+    public ResponseEntity<String> getPing() {
+        return ResponseEntity.ok("pong");
+    }
+    
     @RequestMapping(value="/", method=GET, produces={"application/json","application/rdf+xml","text/turtle"})
     public ResponseEntity<String> getBegreper(@RequestHeader(value = "Accept", required = false) String acceptHeader) {
         MimeType negotiatedMimeType = negotiateMimeType(acceptHeader);
