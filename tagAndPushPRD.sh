@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+echo tagging informasjonsforvaltning/begrepspubliserer:ut1_latest with informasjonsforvaltning/begrepspubliserer:prd_latest
+docker tag informasjonsforvaltning/begrepspubliserer:ut1_latest informasjonsforvaltning/begrepspubliserer:prd_latest
+docker push informasjonsforvaltning/begrepspubliserer:prd_latest
