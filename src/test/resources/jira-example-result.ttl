@@ -13,18 +13,18 @@
 <http://data.brreg.no/begrep/57994>
         a                             skos:Concept ;
         skosno:betydningsbeskrivelse  [ a           skosno:Definisjon ;
-                                        dct:source  [ rdfs:label  "customfield_12501"@nn ]
+                                        rdfs:label  "customfield_12501"@nn
                                       ] ;
         skosno:betydningsbeskrivelse  [ a           skosno:Definisjon ;
-                                        dct:source  [ rdfs:label  "overførsel i økonomisk sammenheng fra en part til en annen"@nb ]
+                                        rdfs:label  "overførsel i økonomisk sammenheng fra en part til en annen"@nb
                                       ] ;
-        dct:identifier                <https://jira.brreg.no/rest/api/2/issue/57994> ;
+        dct:identifier                "https://jira.brreg.no/rest/api/2/issue/57994" ;
         dct:publisher                 <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> ;
         dct:subject                   "Økonomi"@nb ;
-        skos:altLabel                 [ a                   skosxl:Label ;
+        skosxl:altLabel               [ a                   skosxl:Label ;
                                         skosxl:literalForm  "customfield_11806"@nb
                                       ] ;
-        skos:hiddenLabel              [ a                   skosxl:Label ;
+        skosxl:hiddenLabel            [ a                   skosxl:Label ;
                                         skosxl:literalForm  "customfield_11807"@nb
                                       ] ;
         skosxl:prefLabel              [ a                   skosxl:Label ;

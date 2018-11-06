@@ -83,12 +83,12 @@ public class JiraExtractor {
     private static Property dctSourceProperty = null;
     private static Property dctSubjectProperty = null;
     private static Property rdfsLabelProperty = null;
-    private static Property skosxlPrefLabelProperty = null;
     private static Property skosnoDefinisjonProperty = null;
-    private static Property skosAltLabelProperty = null;
-    private static Property skosHiddenLabelProperty = null;
     private static Property skosnoBetydningsbeskrivelseProperty = null;
+    private static Property skosxlAltLabelProperty = null;
+    private static Property skosxlHiddenLabelProperty = null;
     private static Property skosxlLiteralForm = null;
+    private static Property skosxlPrefLabelProperty = null;
 
     private static final Pattern STRIP_JIRA_LINKS_PATTERN = Pattern.compile("\\[(.*?)\\|.*?\\]");
 
@@ -196,7 +196,7 @@ public class JiraExtractor {
             return;
         }
         begrep.addProperty(RDF.type, SKOS.Concept);
-        begrep.addProperty(dctIdentifierProperty, model.createResource(MessageFormat.format(JIRA_URI, idNode.asText())));
+        begrep.addProperty(dctIdentifierProperty, MessageFormat.format(JIRA_URI, idNode.asText()));
 
         begrep.addProperty(dctPublisherProperty,
                 model.createResource(MessageFormat.format(ENHETSREGISTER_URI, (ANSVARLIG_VIRKSOMHET_ORGNR != null && ENHETSREGISTER_URI.isEmpty()) ? ENHETSREGISTER_URI : DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR)));
@@ -216,14 +216,12 @@ public class JiraExtractor {
                     model.add(begrep, skosxlPrefLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
                 } else if ("Begrep.definisjon".equals(fieldValue)) {
                     Resource definition = model.createResource(skosnoDefinisjon);
-                    Resource source = model.createResource();
-                    source.addProperty(rdfsLabelProperty, stripJiraLinks(fieldNode.asText()), language);
-                    model.add(definition, dctSourceProperty, source);
+                    definition.addProperty(rdfsLabelProperty, stripJiraLinks(fieldNode.asText()), language);
                     model.add(begrep, skosnoBetydningsbeskrivelseProperty, definition);
                 } else if ("Begrep.tillattTerm".equals(fieldValue)) {
-                    model.add(begrep, skosAltLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
+                    model.add(begrep, skosxlAltLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
                 } else if ("Begrep.frarådetTerm".equals(fieldValue)) {
-                    model.add(begrep, skosHiddenLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
+                    model.add(begrep, skosxlHiddenLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
                 } else if ("Begrep.fagområde.tekst".equals(fieldValue) && fieldNode.has("value")) {
                     model.add(begrep, dctSubjectProperty, stripJiraLinks(fieldNode.get("value").asText()), language);
                 }
@@ -292,9 +290,9 @@ public class JiraExtractor {
         dctSubjectProperty       = model.createProperty(DCT_URI, "subject");
         rdfsLabelProperty        = model.createProperty(RDFS_URI, "label");
         skosnoDefinisjonProperty = model.createProperty(SKOSNO_URI, "definisjon");
-        skosAltLabelProperty     = model.createProperty(SKOS_URI, "altLabel");
-        skosHiddenLabelProperty  = model.createProperty(SKOS_URI, "hiddenLabel");
         skosnoBetydningsbeskrivelseProperty = model.createProperty(SKOSNO_URI, "betydningsbeskrivelse");
+        skosxlAltLabelProperty   = model.createProperty(SKOSXL_URI, "altLabel");
+        skosxlHiddenLabelProperty = model.createProperty(SKOSXL_URI, "hiddenLabel");
         skosxlLiteralForm        = model.createProperty(SKOSXL_URI, "literalForm");
         skosxlPrefLabelProperty  = model.createProperty(SKOSXL_URI, "prefLabel");
     }
