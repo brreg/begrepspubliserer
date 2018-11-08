@@ -5,6 +5,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.brreg.begrep.Application;
 import no.brreg.begrep.controller.BegrepController;
 import no.brreg.begrep.exceptions.ExtractException;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.RIOT;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.SKOS;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +66,23 @@ public class JiraExtractorTest {
         String resultTurtle = application.getBegrepDump(BegrepController.TURTLE_MIMETYPE);
         String fasitTurtle = resourceAsString("jira-example-result.ttl");
         Assert.assertEquals(fasitTurtle, resultTurtle);
+    }
+
+    @Test
+    public void reimportBegrep() {
+        RIOT.init();
+        Model model = ModelFactory.createDefaultModel();
+        model.read(resourceAsReader("jira-example-result.ttl"), "http://data.brreg.no", "TURTLE");
+
+        Assert.assertTrue(model.contains(
+                model.createResource("http://data.brreg.no/begrep/57994"),
+                RDF.type,
+                SKOS.Concept));
+
+        Assert.assertFalse(model.contains(
+                model.createResource("http://data.brreg.no/begrep/57994asdf"),
+                RDF.type,
+                SKOS.Concept));
     }
 
 }
