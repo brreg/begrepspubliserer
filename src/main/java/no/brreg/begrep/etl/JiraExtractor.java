@@ -172,6 +172,8 @@ public class JiraExtractor {
                     throw new ExtractException("Expected " + Integer.toString(totalToFetch) + ". Got " + Integer.toString(totalFetched));
                 }
 
+                LOGGER.info(String.format("Finished fetching %d begrep from Jira", totalFetched));
+
                 dumpModel(model, BegrepController.JSON_MIMETYPE);
                 dumpModel(model, BegrepController.RDF_MIMETYPE);
                 dumpModel(model, BegrepController.TURTLE_MIMETYPE);
