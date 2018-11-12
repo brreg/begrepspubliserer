@@ -1,5 +1,0 @@
-version: "3"
-
-services:
-  begrep-jira-adaptor:
-    image: no.brreg/begrep-jira-adaptor:latest
