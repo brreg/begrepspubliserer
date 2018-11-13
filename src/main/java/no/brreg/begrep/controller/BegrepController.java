@@ -92,7 +92,7 @@ public class BegrepController {
                     }
 
                     String[] acceptExtension = acceptParams.split("=");
-                    if (acceptExtension!=null && acceptExtension.length==2 && acceptExtension[0].trim().equals("q")) {
+                    if (acceptExtension!=null && acceptExtension.length==2 && "q".equals(acceptExtension[0].trim())) {
                         try {
                             quality = Double.valueOf(acceptExtension[1]);
                         } catch (NumberFormatException e) {
