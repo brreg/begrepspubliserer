@@ -19,10 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import static org.mockito.Mockito.*;
@@ -64,9 +61,13 @@ public class JiraExtractorTest {
 
         jiraExtractorSpy.extract();
 
-        String resultTurtle = application.getBegrepDump(BegrepController.TURTLE_MIMETYPE);
-        String fasitTurtle = resourceAsString("jira-example-result.ttl");
-        Assert.assertEquals(fasitTurtle, resultTurtle);
+        Model resultModel = ModelFactory.createDefaultModel();
+        resultModel.read(new StringReader(application.getBegrepDump(BegrepController.TURTLE_MIMETYPE)), "", BegrepController.TURTLE_MIMETYPE.toString());
+
+        Model fasitModel = ModelFactory.createDefaultModel();
+        fasitModel.read(resourceAsReader("jira-example-result.ttl"), "", BegrepController.TURTLE_MIMETYPE.toString());
+
+        Assert.assertTrue(resultModel.isIsomorphicWith(fasitModel));
     }
 
     @Test
