@@ -46,7 +46,7 @@ public class JiraExtractorTest {
         return sb.toString();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked"})
     @Test
     public void extractBegrep() throws ExtractException, IOException {
         Application application = new Application();

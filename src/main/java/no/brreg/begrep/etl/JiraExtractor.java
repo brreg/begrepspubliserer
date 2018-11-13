@@ -105,6 +105,7 @@ public class JiraExtractor {
         this.application = application;
     }
 
+    @SuppressWarnings({"squid:MethodCyclomaticComplexity"})
     public void extract() throws ExtractException {
         boolean isAlreadyExtracting = isExtracting.getAndSet(true);
         if (!isAlreadyExtracting) { //If it isn't already extracting, extract (and make sure isExtracting is reset in the end)
@@ -187,6 +188,7 @@ public class JiraExtractor {
         }
     }
 
+    @SuppressWarnings({"squid:MethodCyclomaticComplexity"})
     private void addBegrepToModel(final Model model, final JsonNode jsonNode) {
         JsonNode idNode = jsonNode.findValue("id");
         if (idNode == null || idNode.isNull()) {

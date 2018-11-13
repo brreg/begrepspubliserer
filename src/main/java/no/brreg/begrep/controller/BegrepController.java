@@ -53,6 +53,7 @@ public class BegrepController {
         }
     }
 
+    @SuppressWarnings({"squid:MethodCyclomaticComplexity"})
     MimeType negotiateMimeType(final String acceptHeader) {
         if (acceptHeader==null || acceptHeader.isEmpty()) {
             return null;
