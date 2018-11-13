@@ -80,10 +80,8 @@ public class JiraExtractor {
     private static Resource skosxlLabel = null;
     private static Property dctIdentifierProperty = null;
     private static Property dctPublisherProperty = null;
-    private static Property dctSourceProperty = null;
     private static Property dctSubjectProperty = null;
     private static Property rdfsLabelProperty = null;
-    private static Property skosnoDefinisjonProperty = null;
     private static Property skosnoBetydningsbeskrivelseProperty = null;
     private static Property skosxlAltLabelProperty = null;
     private static Property skosxlHiddenLabelProperty = null;
@@ -247,15 +245,15 @@ public class JiraExtractor {
     }
 
     private static String mimeTypeToFormat(final MimeType mimeType) {
+        String format = null;
         if (BegrepController.JSON_MIMETYPE.equals(mimeType)) {
-            return JSON_FORMAT;
+            format = JSON_FORMAT;
         } else if (BegrepController.RDF_MIMETYPE.equals(mimeType)) {
-            return RDF_FORMAT;
+            format = RDF_FORMAT;
         } else if (BegrepController.TURTLE_MIMETYPE.equals(mimeType)) {
-            return TURTLE_FORMAT;
-        } else {
-            return null;
+            format = TURTLE_FORMAT;
         }
+        return format;
     }
 
     private void loadMappings() throws IOException {
@@ -290,10 +288,8 @@ public class JiraExtractor {
         skosxlLabel              = model.createResource(SKOSXL_URI + "Label");
         dctIdentifierProperty    = model.createProperty(DCT_URI, "identifier");
         dctPublisherProperty     = model.createProperty(DCT_URI, "publisher");
-        dctSourceProperty        = model.createProperty(DCT_URI, "source");
         dctSubjectProperty       = model.createProperty(DCT_URI, "subject");
         rdfsLabelProperty        = model.createProperty(RDFS_URI, "label");
-        skosnoDefinisjonProperty = model.createProperty(SKOSNO_URI, "definisjon");
         skosnoBetydningsbeskrivelseProperty = model.createProperty(SKOSNO_URI, "betydningsbeskrivelse");
         skosxlAltLabelProperty   = model.createProperty(SKOSXL_URI, "altLabel");
         skosxlHiddenLabelProperty = model.createProperty(SKOSXL_URI, "hiddenLabel");
