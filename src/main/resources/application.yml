@@ -2,3 +2,6 @@ logging:
   level.: ERROR
   level.org.springframework: ERROR
   level.org.springframework.web: ERROR
+server:
+  servlet:
+    context-path: /begrep/
