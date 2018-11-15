@@ -67,7 +67,9 @@ public class JiraExtractorTest {
         Model fasitModel = ModelFactory.createDefaultModel();
         fasitModel.read(resourceAsReader("jira-example-result.ttl"), "", BegrepController.TURTLE_MIMETYPE.toString());
 
-        Assert.assertTrue(resultModel.isIsomorphicWith(fasitModel));
+        if (!resultModel.isIsomorphicWith(fasitModel)) {
+            Assert.fail("\nModels are not isomorphic. Got actual:\n" + application.getBegrepDump(BegrepController.TURTLE_MIMETYPE));
+        }
     }
 
     @Test

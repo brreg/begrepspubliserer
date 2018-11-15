@@ -80,8 +80,10 @@ public class JiraExtractor {
     private static Resource skosxlLabel = null;
     private static Property dctIdentifierProperty = null;
     private static Property dctPublisherProperty = null;
+    private static Property dctSourceProperty = null;
     private static Property dctSubjectProperty = null;
     private static Property rdfsLabelProperty = null;
+    private static Property skosScopeNote = null;
     private static Property skosnoBetydningsbeskrivelseProperty = null;
     private static Property skosxlAltLabelProperty = null;
     private static Property skosxlHiddenLabelProperty = null;
@@ -194,6 +196,7 @@ public class JiraExtractor {
         }
 
         Resource begrep = model.createResource(MessageFormat.format(BEGREP_URI, idNode.asText()));
+        Resource betydningsbeskrivelse = model.createResource(skosnoDefinisjon);
         if (begrep == null) {
             return;
         }
@@ -225,15 +228,20 @@ public class JiraExtractor {
             if ("Begrep.anbefaltTerm".equals(fieldValue)) {
                 model.add(begrep, skosxlPrefLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
             } else if ("Begrep.definisjon".equals(fieldValue)) {
-                Resource definition = model.createResource(skosnoDefinisjon);
-                definition.addProperty(rdfsLabelProperty, stripJiraLinks(fieldNode.asText()), language);
-                model.add(begrep, skosnoBetydningsbeskrivelseProperty, definition);
+                betydningsbeskrivelse.addProperty(rdfsLabelProperty, stripJiraLinks(fieldNode.asText()), language);
+                model.add(begrep, skosnoBetydningsbeskrivelseProperty, betydningsbeskrivelse);
             } else if ("Begrep.tillattTerm".equals(fieldValue)) {
                 model.add(begrep, skosxlAltLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
             } else if ("Begrep.frarådetTerm".equals(fieldValue)) {
                 model.add(begrep, skosxlHiddenLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
             } else if ("Begrep.fagområde.tekst".equals(fieldValue)) {
                 model.add(begrep, dctSubjectProperty, stripJiraLinks(fieldNode.asText()), language);
+            } else if ("Betydningsbeskrivelse.kilde.tekst".equals(fieldValue)) {
+                Resource source = model.createResource();
+                source.addProperty(rdfsLabelProperty, stripJiraLinks(fieldNode.asText()), language);
+                model.add(betydningsbeskrivelse, dctSourceProperty, source);
+            } else if ("Betydningsbeskrivelse.merknad.tekst".equals(fieldValue)) {
+                model.add(betydningsbeskrivelse, skosScopeNote, stripJiraLinks(fieldNode.asText()), language);
             }
         }
     }
@@ -295,8 +303,10 @@ public class JiraExtractor {
         skosxlLabel              = model.createResource(SKOSXL_URI + "Label");
         dctIdentifierProperty    = model.createProperty(DCT_URI, "identifier");
         dctPublisherProperty     = model.createProperty(DCT_URI, "publisher");
+        dctSourceProperty        = model.createProperty(DCT_URI, "source");
         dctSubjectProperty       = model.createProperty(DCT_URI, "subject");
         rdfsLabelProperty        = model.createProperty(RDFS_URI, "label");
+        skosScopeNote            = model.createProperty(SKOS_URI, "scopeNote");
         skosnoBetydningsbeskrivelseProperty = model.createProperty(SKOSNO_URI, "betydningsbeskrivelse");
         skosxlAltLabelProperty   = model.createProperty(SKOSXL_URI, "altLabel");
         skosxlHiddenLabelProperty = model.createProperty(SKOSXL_URI, "hiddenLabel");
