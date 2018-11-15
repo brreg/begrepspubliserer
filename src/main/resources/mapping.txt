@@ -1,7 +1,8 @@
-summary=Begrep.anbefaltTerm@nb
-customfield_11800=Begrep.definisjon@nb
-customfield_11806=Begrep.tillattTerm@nb
-customfield_11807=Begrep.frarådetTerm@nb
-customfield_12501=Begrep.definisjon@nn
-customfield_13101=Betydningsbeskrivelse.kilde.tekst@nb
-customfield_11804=Begrep.fagområde.tekst@nb
+fields.summary=Begrep.anbefaltTerm@nb
+fields.customfield_11800=Begrep.definisjon@nb
+fields.customfield_11802=Betydningsbeskrivelse.merknad.tekst@nb
+fields.customfield_11804.value=Begrep.fagområde.tekst@nb
+fields.customfield_11806=Begrep.tillattTerm@nb
+fields.customfield_11807=Begrep.frarådetTerm@nb
+fields.customfield_12501=Begrep.definisjon@nn
+fields.customfield_13101=Betydningsbeskrivelse.kilde.tekst@nb

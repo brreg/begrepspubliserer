@@ -203,30 +203,37 @@ public class JiraExtractor {
         begrep.addProperty(dctPublisherProperty,
                 model.createResource(MessageFormat.format(ENHETSREGISTER_URI, (ANSVARLIG_VIRKSOMHET_ORGNR != null && ENHETSREGISTER_URI.isEmpty()) ? ENHETSREGISTER_URI : DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR)));
 
-        JsonNode fieldsNode = jsonNode.findValue("fields");
-        if (fieldsNode != null) {
-            for (Map.Entry<String, Mapping> fieldMappingEntry : fieldMappings.entrySet()) {
-                JsonNode fieldNode = fieldsNode.findValue(fieldMappingEntry.getKey());
-                if (fieldNode == null || fieldNode.isNull()) {
-                    continue;
+        for (Map.Entry<String, Mapping> fieldMappingEntry : fieldMappings.entrySet()) {
+            String[] fieldPaths = fieldMappingEntry.getKey().split("\\.");
+            JsonNode fieldNode = jsonNode;
+            for (String fieldPath : fieldPaths) {
+                if (fieldNode.has(fieldPath)) {
+                    fieldNode = fieldNode.get(fieldPath);
+                } else {
+                    fieldNode = null;
+                    break;
                 }
+            }
 
-                Mapping fieldMapping = fieldMappingEntry.getValue();
-                String fieldValue = fieldMapping.getField();
-                String language = fieldMapping.getLanguage();
-                if ("Begrep.anbefaltTerm".equals(fieldValue)) {
-                    model.add(begrep, skosxlPrefLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
-                } else if ("Begrep.definisjon".equals(fieldValue)) {
-                    Resource definition = model.createResource(skosnoDefinisjon);
-                    definition.addProperty(rdfsLabelProperty, stripJiraLinks(fieldNode.asText()), language);
-                    model.add(begrep, skosnoBetydningsbeskrivelseProperty, definition);
-                } else if ("Begrep.tillattTerm".equals(fieldValue)) {
-                    model.add(begrep, skosxlAltLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
-                } else if ("Begrep.frarådetTerm".equals(fieldValue)) {
-                    model.add(begrep, skosxlHiddenLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
-                } else if ("Begrep.fagområde.tekst".equals(fieldValue) && fieldNode.has("value")) {
-                    model.add(begrep, dctSubjectProperty, stripJiraLinks(fieldNode.get("value").asText()), language);
-                }
+            if (fieldNode == null || fieldNode.isNull()) {
+                continue;
+            }
+
+            Mapping fieldMapping = fieldMappingEntry.getValue();
+            String fieldValue = fieldMapping.getField();
+            String language = fieldMapping.getLanguage();
+            if ("Begrep.anbefaltTerm".equals(fieldValue)) {
+                model.add(begrep, skosxlPrefLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
+            } else if ("Begrep.definisjon".equals(fieldValue)) {
+                Resource definition = model.createResource(skosnoDefinisjon);
+                definition.addProperty(rdfsLabelProperty, stripJiraLinks(fieldNode.asText()), language);
+                model.add(begrep, skosnoBetydningsbeskrivelseProperty, definition);
+            } else if ("Begrep.tillattTerm".equals(fieldValue)) {
+                model.add(begrep, skosxlAltLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
+            } else if ("Begrep.frarådetTerm".equals(fieldValue)) {
+                model.add(begrep, skosxlHiddenLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
+            } else if ("Begrep.fagområde.tekst".equals(fieldValue)) {
+                model.add(begrep, dctSubjectProperty, stripJiraLinks(fieldNode.asText()), language);
             }
         }
     }
