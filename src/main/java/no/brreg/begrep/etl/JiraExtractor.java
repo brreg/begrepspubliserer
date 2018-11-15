@@ -106,7 +106,7 @@ public class JiraExtractor {
         this.application = application;
     }
 
-    @SuppressWarnings({"squid:MethodCyclomaticComplexity"})
+    @SuppressWarnings({"squid:MethodCyclomaticComplexity", "squid:S134"})
     public void extract() throws ExtractException {
         boolean isAlreadyExtracting = isExtracting.getAndSet(true);
         if (!isAlreadyExtracting) { //If it isn't already extracting, extract (and make sure isExtracting is reset in the end)
