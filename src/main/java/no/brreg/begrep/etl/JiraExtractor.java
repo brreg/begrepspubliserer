@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 
+@SuppressWarnings({"squid:S00103"})
 public class JiraExtractor {
     private static Logger LOGGER = LoggerFactory.getLogger(JiraExtractor.class);
 

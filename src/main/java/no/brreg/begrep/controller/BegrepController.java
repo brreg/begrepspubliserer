@@ -15,6 +15,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 
 @Controller
+@SuppressWarnings({"squid:S00103"})
 public class BegrepController {
 
     public static final MimeType JSON_MIMETYPE    = MimeType.valueOf("application/json");
