@@ -4,4 +4,12 @@ logging:
   level.org.springframework.web: ERROR
 server:
   servlet:
-    context-path: /begrep/
+    context-path: "/begrep/"
+management:
+  server:
+    port: 8181
+  endpoints:
+    web:
+      base-path: "/begrep/"
+      exposure:
+        include: "prometheus,metrics,info,health"

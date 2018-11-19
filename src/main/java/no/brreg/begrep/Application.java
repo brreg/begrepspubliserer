@@ -2,6 +2,7 @@ package no.brreg.begrep;
 
 import no.brreg.begrep.etl.JiraExtractor;
 import no.brreg.begrep.exceptions.ExtractException;
+import no.brreg.spring.actuator.prometheus.EnablePrometheusEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @SpringBootApplication
 @EnableScheduling
+@EnablePrometheusEndpoint
 public class Application {
     private static Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
