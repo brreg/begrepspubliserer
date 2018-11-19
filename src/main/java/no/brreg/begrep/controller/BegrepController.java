@@ -31,7 +31,16 @@ public class BegrepController {
     public ResponseEntity<String> getPing() {
         return ResponseEntity.ok("pong");
     }
-    
+
+    @RequestMapping(value="/ready", method=GET)
+    public ResponseEntity getReady() {
+        if (Application.getBegrepDump(TURTLE_MIMETYPE) == null) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
+    }
+
     @RequestMapping(value="/", method=GET, produces={"application/json","application/rdf+xml","text/turtle"})
     public ResponseEntity<String> getBegreper(@RequestHeader(value = "Accept", required = false) String acceptHeader) {
         MimeType negotiatedMimeType = negotiateMimeType(acceptHeader);
