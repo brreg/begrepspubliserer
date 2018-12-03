@@ -147,6 +147,16 @@
                 "customfield_14005": null,
                 "customfield_12500": null,
                 "customfield_14006": null,
+                "customfield_14518": {
+                    "self": "https://jira.brreg.no/rest/api/2/customFieldOption/12652",
+                    "value": "informasjonsforvaltning@brreg.no",
+                    "id": "12652",
+                    "child": {
+                        "self": "https://jira.brreg.no/rest/api/2/customFieldOption/12653",
+                        "value": "(+47) 75 00 75 00",
+                        "id": "12653"
+                    }
+                },
                 "customfield_10710": null,
                 "customfield_10711": null,
                 "customfield_11922": {

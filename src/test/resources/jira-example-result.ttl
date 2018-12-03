@@ -28,4 +28,8 @@
                                       ] ;
         skosxl:prefLabel              [ a                   skosxl:Label ;
                                         skosxl:literalForm  "økonomisk transaksjon"@nb
+                                      ] ;
+        dcat:contactPoint             [ a                   vcard:Organization ;
+                                        vcard:hasEmail      <mailto:informasjonsforvaltning@brreg.no> ;
+                                        vcard:hasTelephone  <tel:+4775007500>
                                       ] .

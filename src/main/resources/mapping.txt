@@ -6,3 +6,5 @@ fields.customfield_11806=Begrep.tillattTerm@nb
 fields.customfield_11807=Begrep.frarådetTerm@nb
 fields.customfield_12501=Begrep.definisjon@nn
 fields.customfield_13101=Betydningsbeskrivelse.kilde.tekst@nb
+fields.customfield_14518.value=Begrep.kontaktpunkt.epost
+fields.customfield_14518.child.value=Begrep.kontaktpunkt.tlf
