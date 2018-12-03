@@ -303,8 +303,7 @@ public class JiraExtractor {
                 //global-number-digits
                 sb.append(ch);
                 first = false;
-            } else if (ch>='0' && ch<='9')
-            {
+            } else if (ch>='0' && ch<='9') {
                 //DIGIT
                 sb.append(ch);
             }
