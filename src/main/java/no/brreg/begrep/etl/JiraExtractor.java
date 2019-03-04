@@ -86,6 +86,7 @@ public class JiraExtractor {
     private static Property dctSourceProperty = null;
     private static Property dctSubjectProperty = null;
     private static Property rdfsLabelProperty = null;
+    private static Property skosExample = null;
     private static Property skosScopeNote = null;
     private static Property skosnoBetydningsbeskrivelseProperty = null;
     private static Property skosxlAltLabelProperty = null;
@@ -271,6 +272,8 @@ public class JiraExtractor {
                 }
                 model.add(kontaktpunkt, vcardHasTelephoneProperty, toPhoneResource(model, fieldNode.asText()));
                 model.add(begrep, dcatContactPointProperty, kontaktpunkt);
+            } else if ("Begrep.eksempel.tekst".equals(fieldValue)) {
+                model.add(begrep, skosExample, stripJiraLinks(fieldNode.asText()), language);
             }
         }
     }
@@ -361,6 +364,7 @@ public class JiraExtractor {
         dctSourceProperty        = model.createProperty(DCT_URI, "source");
         dctSubjectProperty       = model.createProperty(DCT_URI, "subject");
         rdfsLabelProperty        = model.createProperty(RDFS_URI, "label");
+        skosExample              = model.createProperty(SKOS_URI, "example");
         skosScopeNote            = model.createProperty(SKOS_URI, "scopeNote");
         skosnoBetydningsbeskrivelseProperty = model.createProperty(SKOSNO_URI, "betydningsbeskrivelse");
         skosxlAltLabelProperty   = model.createProperty(SKOSXL_URI, "altLabel");

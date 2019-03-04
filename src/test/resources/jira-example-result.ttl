@@ -20,6 +20,7 @@
         dct:identifier                "https://jira.brreg.no/rest/api/2/issue/57994" ;
         dct:publisher                 <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> ;
         dct:subject                   "Økonomi"@nb ;
+        skos:example                  "Daglig leder, innehaver, forretningsfører, styreleder, styremedlem, regnskapsfører."@no ;
         skosxl:altLabel               [ a                   skosxl:Label ;
                                         skosxl:literalForm  "customfield_11806"@nb
                                       ] ;
