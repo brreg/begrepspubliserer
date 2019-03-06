@@ -7,6 +7,8 @@ import no.brreg.begrep.controller.BegrepController;
 import no.brreg.begrep.exceptions.ExtractException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
@@ -56,10 +58,6 @@ public class JiraExtractor {
     private static final String XSD_URI = "http://www.w3.org/2001/XMLSchema#";
     private static final String VCARD_NS = "vcard";
     private static final String VCARD_URI = "http://www.w3.org/2006/vcard/ns#";
-
-    private static final String JSON_FORMAT = "RDF/JSON";
-    private static final String RDF_FORMAT = "RDF/XML";
-    private static final String TURTLE_FORMAT = "TURTLE";
 
     private static final String BEGREP_URI = "http://data.brreg.no/begrep/{0}";
     private static final String JIRA_URI = "https://jira.brreg.no/rest/api/2/issue/{0}";
@@ -318,11 +316,11 @@ public class JiraExtractor {
     private static String mimeTypeToFormat(final MimeType mimeType) {
         String format = null;
         if (BegrepController.JSON_MIMETYPE.equals(mimeType)) {
-            format = JSON_FORMAT;
+            format = new RDFFormat(Lang.RDFJSON).toString();
         } else if (BegrepController.RDF_MIMETYPE.equals(mimeType)) {
-            format = RDF_FORMAT;
+            format = new RDFFormat(Lang.RDFXML).toString();
         } else if (BegrepController.TURTLE_MIMETYPE.equals(mimeType)) {
-            format = TURTLE_FORMAT;
+            format = new RDFFormat(Lang.TURTLE).toString();
         }
         return format;
     }
