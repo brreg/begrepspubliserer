@@ -1,0 +1,68 @@
+openapi: 3.0.2
+info:
+  description: Provides the The Brønnøysund Register Centre's concept collection
+  version: '0.1'
+  title: The Brønnøysund Register Centre's concept collection API
+  contact:
+    name: Brønnøysundregistrene
+    url: 'https://fellesdatakatalog.brreg.no'
+    email: fellesdatakatalog@brreg.no
+  license:
+    name: License of API
+    url: 'http://data.norge.no/nlod/no/2.0'
+externalDocs:
+  description: Dokumentasjon på Informasjonsforvaltning GitHub
+  url: https://informasjonsforvaltning.github.io/felles-datakatalog/begrepskatalog/api/
+servers:
+  - url: 'https://data.brreg.no'
+    description: The production Concept server
+tags:
+  - name: conceptCollection
+    description: ConceptCollection operations
+paths:
+  /begrep:
+    get:
+      tags:
+        - conceptCollection
+      summary: List every concept in the catalog
+      description: So far only simple queries is supported
+      operationId: getBegreper
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Concept"
+            application/rdf+xml:
+              schema:
+                type: object
+              examples:
+                conceptExample:
+                  summary: A rdf+xml example of a concept
+                  externalValue: 'https://raw.githubusercontent.com/brreg/begrepspubliserer/develop/src/test/resources/jira-example-result.ttl'
+            text/turtle:
+              schema:
+                type: string
+              examples:
+                conceptExample:
+                  summary: A turtle example of a concept
+                  externalValue: 'https://raw.githubusercontent.com/brreg/begrepspubliserer/develop/src/test/resources/jira-example-result.ttl'
+components:
+  schemas:
+    Concept:
+      type: object
+      properties:
+        id:
+          type: string
+        prefLabel:
+          type: string
+          description: Anbefalt term
+        definition:
+          type: string
+      example:
+        id: 1
+        prefLabel: journalpost
+        definition: enkelt registrering i en journal, det vil si opplysningene om et saksdokument med eventuelle vedlegg
