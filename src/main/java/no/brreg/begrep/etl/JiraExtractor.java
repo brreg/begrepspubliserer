@@ -60,13 +60,13 @@ public class JiraExtractor {
     private static final String VCARD_URI = "http://www.w3.org/2006/vcard/ns#";
 
     private static final String BEGREP_URI = "http://data.brreg.no/begrep/{0}";
-    private static final String JIRA_URI = "https://jira.brreg.no/rest/api/2/issue/{0}";
+    private static final String JIRA_URI = getEnvOrDefault("JIRA_URI", "https://jira.brreg.no/rest/api/2/issue/{0}");
     private static final String ENHETSREGISTER_URI = "https://data.brreg.no/enhetsregisteret/api/enheter/{0}";
 
     private static final String ANSVARLIG_VIRKSOMHET_ORGNR = System.getenv("ANSVARLIG_VIRKSOMHET_ORGNR");
     private static final String DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR = "974760673";
 
-    private static final String JIRA_URL = "https://jira.brreg.no/rest/api/2/search?orderBy=id&jql=project=BEGREP+and+status=Godkjent+and+\"Offentlig tilgjengelig?\"=Ja&maxResults={0}&startAt={1}";
+    private static final String JIRA_URL = getEnvOrDefault("JIRA_URL", "https://jira.brreg.no/rest/api/2/search?orderBy=id&jql=project=BEGREP+and+status=Godkjent+and+\"Offentlig tilgjengelig?\"=Ja&maxResults={0}&startAt={1}");
     private static final String JIRA_USER = System.getenv("JIRA_BEGREP_USER");
     private static final String JIRA_PASSWORD = System.getenv("JIRA_BEGREP_PASSWORD");
     private static final int JIRA_MAX_RESULTS = 50;
@@ -107,6 +107,11 @@ public class JiraExtractor {
 
     public JiraExtractor(final Application application) {
         this.application = application;
+    }
+
+    private static String getEnvOrDefault(final String env, final String def) {
+        String value = System.getenv(env);
+        return value != null ? value : def;
     }
 
     @SuppressWarnings({"squid:MethodCyclomaticComplexity", "squid:S134"})
