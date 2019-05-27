@@ -5,13 +5,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import no.brreg.begrep.Application;
 import no.brreg.begrep.controller.BegrepController;
 import no.brreg.begrep.exceptions.ExtractException;
+import no.difi.skos_ap_no.begrep.builder.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.RIOT;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.SKOS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -36,32 +34,9 @@ import java.util.regex.Pattern;
 public class JiraExtractor {
     private static Logger LOGGER = LoggerFactory.getLogger(JiraExtractor.class);
 
-    private static final String RDF_NS = "rdf";
-    private static final String RDF_URI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-    private static final String RDFS_NS = "rdfs";
-    private static final String RDFS_URI = "http://www.w3.org/2000/01/rdf-schema#";
-    private static final String SKOS_NS = "skos";
-    private static final String SKOS_URI = "http://www.w3.org/2004/02/skos/core#";
-    private static final String DCT_NS = "dct";
-    private static final String DCT_URI = "http://purl.org/dc/terms/";
-    private static final String SKOSXL_NS = "skosxl";
-    private static final String SKOSXL_URI = "http://www.w3.org/2008/05/skos-xl#";
-    private static final String XKOS_NS = "xkos";
-    private static final String XKOS_URI = "http://rdf-vocabulary.ddialliance.org/xkos#";
-    private static final String DCAT_NS = "dcat";
-    private static final String DCAT_URI = "http://www.w3.org/ns/dcat#";
-    private static final String SKOSNO_NS = "skosno";
-    private static final String SKOSNO_URI = "http://difi.no/skosno#";
-    private static final String SCHEMA_NS = "schema";
-    private static final String SCHEMA_URI = "http://schema.org/";
-    private static final String XSD_NS = "xsd";
-    private static final String XSD_URI = "http://www.w3.org/2001/XMLSchema#";
-    private static final String VCARD_NS = "vcard";
-    private static final String VCARD_URI = "http://www.w3.org/2006/vcard/ns#";
-
-    private static final String BEGREP_URI = "http://data.brreg.no/begrep/{0}";
+    private static final String BEGREP_COLLECTION_URI = "http://data.brreg.no/begrep";
+    private static final String BEGREP_URI = BEGREP_COLLECTION_URI + "/{0}";
     private static final String JIRA_URI = getEnvOrDefault("JIRA_URI", "https://jira.brreg.no/rest/api/2/issue/{0}");
-    private static final String ENHETSREGISTER_URI = "https://data.brreg.no/enhetsregisteret/api/enheter/{0}";
 
     private static final String ANSVARLIG_VIRKSOMHET_ORGNR = System.getenv("ANSVARLIG_VIRKSOMHET_ORGNR");
     private static final String DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR = "974760673";
@@ -73,26 +48,6 @@ public class JiraExtractor {
 
     private static Map<String, Mapping> fieldMappings = null;
 
-
-    private static Model model = null;
-    private static Resource skosnoDefinisjon = null;
-    private static Resource skosxlLabel = null;
-    private static Resource vcardOrganization = null;
-    private static Property dcatContactPointProperty = null;
-    private static Property dctIdentifierProperty = null;
-    private static Property dctPublisherProperty = null;
-    private static Property dctSourceProperty = null;
-    private static Property dctSubjectProperty = null;
-    private static Property rdfsLabelProperty = null;
-    private static Property skosExample = null;
-    private static Property skosScopeNote = null;
-    private static Property skosnoBetydningsbeskrivelseProperty = null;
-    private static Property skosxlAltLabelProperty = null;
-    private static Property skosxlHiddenLabelProperty = null;
-    private static Property skosxlLiteralForm = null;
-    private static Property skosxlPrefLabelProperty = null;
-    private static Property vcardHasEmailProperty = null;
-    private static Property vcardHasTelephoneProperty = null;
 
     private static final Pattern STRIP_JIRA_LINKS_PATTERN = Pattern.compile("\\[(.*?)\\|.*?\\]");
 
@@ -126,10 +81,7 @@ public class JiraExtractor {
                 }
             }
 
-            initializeStaticModel();
-
             RestTemplate restTemplate = createRestTemplate();
-            ResponseEntity<ObjectNode> response = null;
 
             try {
                 HttpHeaders customHeaders = new HttpHeaders();
@@ -143,10 +95,13 @@ public class JiraExtractor {
                 int currentFetched = 0;
                 int totalFetched = 0;
 
+                ModellBuilder modellBuilder = ModellBuilder.builder();
+                BegrepssamlingBuilder begrepssamlingBuilder = modellBuilder.begrepssamlingBuilder(BEGREP_COLLECTION_URI);
+
                 do {
                     String url = MessageFormat.format(JIRA_URL, JIRA_MAX_RESULTS, startAt);
                     LOGGER.info("Fetching begrep from Jira: "+url);
-                    response = restTemplate.exchange(
+                    ResponseEntity<ObjectNode> response = restTemplate.exchange(
                             url,
                             HttpMethod.GET,
                             new HttpEntity<>(customHeaders),
@@ -169,7 +124,7 @@ public class JiraExtractor {
                     JsonNode issues = objectNode.findValue("issues");
                     if (issues != null && issues.isArray()) {
                         for (Iterator<JsonNode> it = issues.elements(); it.hasNext(); ) {
-                            addBegrepToModel(model, it.next());
+                            addBegrepToCollection(begrepssamlingBuilder, it.next());
                             currentFetched++;
                         }
                     }
@@ -179,10 +134,12 @@ public class JiraExtractor {
                 } while (totalFetched < totalToFetch && currentFetched > 0);
 
                 if (totalFetched != totalToFetch) {
-                    throw new ExtractException("Expected " + Integer.toString(totalToFetch) + ". Got " + Integer.toString(totalFetched));
+                    throw new ExtractException("Expected " + totalToFetch + ". Got " + totalFetched);
                 }
 
-                LOGGER.info(String.format("Finished fetching %d begrep from Jira", totalFetched));
+                LOGGER.info("Finished fetching " + totalFetched + " begrep from Jira");
+
+                Model model = modellBuilder.build();
 
                 dumpModel(model, BegrepController.JSON_MIMETYPE);
                 dumpModel(model, BegrepController.RDF_MIMETYPE);
@@ -197,24 +154,19 @@ public class JiraExtractor {
         }
     }
 
-    @SuppressWarnings({"squid:MethodCyclomaticComplexity"})
-    private void addBegrepToModel(final Model model, final JsonNode jsonNode) {
+    private BegrepssamlingBuilder addBegrepToCollection(final BegrepssamlingBuilder begrepssamlingBuilder, final JsonNode jsonNode) {
         JsonNode idNode = jsonNode.findValue("id");
         if (idNode == null || idNode.isNull()) {
-            return;
+            return begrepssamlingBuilder;
         }
 
-        Resource begrep = model.createResource(MessageFormat.format(BEGREP_URI, idNode.asText()));
-        Resource betydningsbeskrivelse = null;
-        Resource kontaktpunkt = null;
-        if (begrep == null) {
-            return;
-        }
-        begrep.addProperty(RDF.type, SKOS.Concept);
-        begrep.addProperty(dctIdentifierProperty, MessageFormat.format(JIRA_URI, idNode.asText()));
+        BegrepBuilder begrepBuilder = begrepssamlingBuilder.begrepBuilder(MessageFormat.format(BEGREP_URI, idNode.asText()))
+                .identifikator(MessageFormat.format(JIRA_URI, idNode.asText()))
+                .ansvarligVirksomhet(ANSVARLIG_VIRKSOMHET_ORGNR!=null && !ANSVARLIG_VIRKSOMHET_ORGNR.isEmpty() ? ANSVARLIG_VIRKSOMHET_ORGNR : DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR);
 
-        begrep.addProperty(dctPublisherProperty,
-                model.createResource(MessageFormat.format(ENHETSREGISTER_URI, (ANSVARLIG_VIRKSOMHET_ORGNR != null && ENHETSREGISTER_URI.isEmpty()) ? ENHETSREGISTER_URI : DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR)));
+        DefinisjonBuilder definisjonBuilder = null;
+        KontaktpunktBuilder kontaktpunktBuilder = null;
+        KildeBuilder kildeBuilder = null;
 
         for (Map.Entry<String, Mapping> fieldMappingEntry : fieldMappings.entrySet()) {
             String[] fieldPaths = fieldMappingEntry.getKey().split("\\.");
@@ -235,50 +187,61 @@ public class JiraExtractor {
             Mapping fieldMapping = fieldMappingEntry.getValue();
             String fieldValue = fieldMapping.getField();
             String language = fieldMapping.getLanguage();
+
             if ("Begrep.anbefaltTerm".equals(fieldValue)) {
-                model.add(begrep, skosxlPrefLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
+                begrepBuilder.anbefaltTerm(stripJiraLinks(fieldNode.asText()), language);
             } else if ("Begrep.definisjon".equals(fieldValue)) {
-                if (betydningsbeskrivelse == null) {
-                    betydningsbeskrivelse = model.createResource(skosnoDefinisjon);
+                if (definisjonBuilder == null) {
+                    definisjonBuilder = begrepBuilder.definisjonBuilder();
                 }
-                betydningsbeskrivelse.addProperty(rdfsLabelProperty, stripJiraLinks(fieldNode.asText()), language);
-                model.add(begrep, skosnoBetydningsbeskrivelseProperty, betydningsbeskrivelse);
+                definisjonBuilder.tekst(stripJiraLinks(fieldNode.asText()), language).build();
             } else if ("Begrep.tillattTerm".equals(fieldValue)) {
-                model.add(begrep, skosxlAltLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
+                begrepBuilder.tillattTerm(stripJiraLinks(fieldNode.asText()), language);
             } else if ("Begrep.frarådetTerm".equals(fieldValue)) {
-                model.add(begrep, skosxlHiddenLabelProperty, createSkosxlLabel(model, stripJiraLinks(fieldNode.asText()), language));
+                begrepBuilder.frarådetTerm(stripJiraLinks(fieldNode.asText()), language);
             } else if ("Begrep.fagområde.tekst".equals(fieldValue)) {
-                model.add(begrep, dctSubjectProperty, stripJiraLinks(fieldNode.asText()), language);
+                begrepBuilder.fagområde(stripJiraLinks(fieldNode.asText()), language);
             } else if ("Betydningsbeskrivelse.kilde.tekst".equals(fieldValue)) {
-                if (betydningsbeskrivelse == null) {
-                    betydningsbeskrivelse = model.createResource(skosnoDefinisjon);
+                if (definisjonBuilder == null) {
+                    definisjonBuilder = begrepBuilder.definisjonBuilder();
                 }
-                Resource source = model.createResource();
-                source.addProperty(rdfsLabelProperty, stripJiraLinks(fieldNode.asText()), language);
-                model.add(betydningsbeskrivelse, dctSourceProperty, source);
-                model.add(begrep, skosnoBetydningsbeskrivelseProperty, betydningsbeskrivelse);
+                if (kildeBuilder == null) {
+                    kildeBuilder = definisjonBuilder.kildeBuilder();
+                }
+                kildeBuilder.tekst(stripJiraLinks(fieldNode.asText()), language);
             } else if ("Betydningsbeskrivelse.merknad.tekst".equals(fieldValue)) {
-                if (betydningsbeskrivelse == null) {
-                    betydningsbeskrivelse = model.createResource(skosnoDefinisjon);
+                if (definisjonBuilder == null) {
+                    definisjonBuilder = begrepBuilder.definisjonBuilder();
                 }
-                model.add(betydningsbeskrivelse, skosScopeNote, stripJiraLinks(fieldNode.asText()), language);
-                model.add(begrep, skosnoBetydningsbeskrivelseProperty, betydningsbeskrivelse);
+                definisjonBuilder.merknad(stripJiraLinks(fieldNode.asText()), language);
             } else if ("Begrep.kontaktpunkt.epost".equals(fieldValue)) {
-                if (kontaktpunkt == null) {
-                    kontaktpunkt = model.createResource(vcardOrganization);
+                if (kontaktpunktBuilder == null) {
+                    kontaktpunktBuilder = begrepBuilder.kontaktpunktBuilder();
                 }
-                model.add(kontaktpunkt, vcardHasEmailProperty, toEmailResource(model, fieldNode.asText()));
-                model.add(begrep, dcatContactPointProperty, kontaktpunkt);
+                kontaktpunktBuilder.epost(fieldNode.asText());
             } else if ("Begrep.kontaktpunkt.tlf".equals(fieldValue)) {
-                if (kontaktpunkt == null) {
-                    kontaktpunkt = model.createResource(vcardOrganization);
+                if (kontaktpunktBuilder == null) {
+                    kontaktpunktBuilder = begrepBuilder.kontaktpunktBuilder();
                 }
-                model.add(kontaktpunkt, vcardHasTelephoneProperty, toPhoneResource(model, fieldNode.asText()));
-                model.add(begrep, dcatContactPointProperty, kontaktpunkt);
+                kontaktpunktBuilder.telefon(fieldNode.asText());
             } else if ("Begrep.eksempel.tekst".equals(fieldValue)) {
-                model.add(begrep, skosExample, stripJiraLinks(fieldNode.asText()), language);
+                begrepBuilder.eksempel(stripJiraLinks(fieldNode.asText()), language);
             }
         }
+
+        if (kildeBuilder != null) {
+            kildeBuilder.build();
+        }
+
+        if (kontaktpunktBuilder != null) {
+            kontaktpunktBuilder.build();
+        }
+
+        if (definisjonBuilder != null) {
+            definisjonBuilder.build();
+        }
+
+        return begrepBuilder.build();
     }
 
     private String stripJiraLinks(final String text) {
@@ -286,36 +249,6 @@ public class JiraExtractor {
             return text;
         }
         return STRIP_JIRA_LINKS_PATTERN.matcher(text).replaceAll("$1");
-    }
-
-    private Resource createSkosxlLabel(final Model model, final String labelText, final String language) {
-        Resource resource = model.createResource(skosxlLabel);
-        resource.addProperty(skosxlLiteralForm, labelText, language);
-        return resource;
-    }
-
-    private Resource toEmailResource(final Model model, final String emailText) {
-        return model.createResource("mailto:"+emailText.trim());
-    }
-
-    private Resource toPhoneResource(final Model model, final String phoneText) {
-        String phoneTextToParse = phoneText.trim();
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        //Really bad parsing of "telephone-subscriber" from https://tools.ietf.org/html/rfc3966 ABNF
-        for (int i=0; i<phoneTextToParse.length(); i++) {
-            char ch = phoneTextToParse.charAt(i);
-            if (first && ch=='+') {
-                //global-number-digits
-                sb.append(ch);
-                first = false;
-            } else if (ch>='0' && ch<='9') {
-                //DIGIT
-                sb.append(ch);
-            }
-            //else skip visual-separator and other content
-        }
-        return model.createResource("tel:"+sb.toString());
     }
 
     private static String mimeTypeToFormat(final MimeType mimeType) {
@@ -343,41 +276,6 @@ public class JiraExtractor {
         }
     }
 
-    private void initializeStaticModel() {
-        RIOT.init();
-
-        model = ModelFactory.createDefaultModel();
-        model.setNsPrefix(RDF_NS,    RDF_URI);
-        model.setNsPrefix(RDFS_NS,   RDFS_URI);
-        model.setNsPrefix(SKOS_NS,   SKOS_URI);
-        model.setNsPrefix(DCT_NS,    DCT_URI);
-        model.setNsPrefix(SKOSXL_NS, SKOSXL_URI);
-        model.setNsPrefix(XKOS_NS,   XKOS_URI);
-        model.setNsPrefix(DCAT_NS,   DCAT_URI);
-        model.setNsPrefix(SKOSNO_NS, SKOSNO_URI);
-        model.setNsPrefix(SCHEMA_NS, SCHEMA_URI);
-        model.setNsPrefix(XSD_NS,    XSD_URI);
-        model.setNsPrefix(VCARD_NS,  VCARD_URI);
-        skosnoDefinisjon         = model.createResource(SKOSNO_URI + "Definisjon");
-        skosxlLabel              = model.createResource(SKOSXL_URI + "Label");
-        vcardOrganization        = model.createResource(VCARD_URI + "Organization");
-        dcatContactPointProperty = model.createProperty(DCAT_URI, "contactPoint");
-        dctIdentifierProperty    = model.createProperty(DCT_URI, "identifier");
-        dctPublisherProperty     = model.createProperty(DCT_URI, "publisher");
-        dctSourceProperty        = model.createProperty(DCT_URI, "source");
-        dctSubjectProperty       = model.createProperty(DCT_URI, "subject");
-        rdfsLabelProperty        = model.createProperty(RDFS_URI, "label");
-        skosExample              = model.createProperty(SKOS_URI, "example");
-        skosScopeNote            = model.createProperty(SKOS_URI, "scopeNote");
-        skosnoBetydningsbeskrivelseProperty = model.createProperty(SKOSNO_URI, "betydningsbeskrivelse");
-        skosxlAltLabelProperty   = model.createProperty(SKOSXL_URI, "altLabel");
-        skosxlHiddenLabelProperty = model.createProperty(SKOSXL_URI, "hiddenLabel");
-        skosxlLiteralForm        = model.createProperty(SKOSXL_URI, "literalForm");
-        skosxlPrefLabelProperty  = model.createProperty(SKOSXL_URI, "prefLabel");
-        vcardHasEmailProperty    = model.createProperty(VCARD_URI, "hasEmail");
-        vcardHasTelephoneProperty = model.createProperty(VCARD_URI, "hasTelephone");
-    }
-
     private void dumpModel(final Model model, final MimeType mimeType) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             model.write(baos, mimeTypeToFormat(mimeType));
@@ -385,7 +283,7 @@ public class JiraExtractor {
         }
     }
 
-    RestTemplate createRestTemplate() {
+    RestTemplate createRestTemplate() { //For mock/spy in tests
         return new RestTemplate();
     }
 
