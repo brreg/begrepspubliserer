@@ -4,7 +4,7 @@
 
     <groupId>no.brreg</groupId>
     <artifactId>begrepspubliserer</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -29,6 +29,8 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.exec.skip>false</maven.exec.skip>
         <!--end standard properties-->
+
+        <jena.version>3.9.0</jena.version>
 
         <sonar.host.url>http://sonar1.brreg.no:9000</sonar.host.url>
         <sonar.maven.version>6.2</sonar.maven.version>
@@ -56,9 +58,15 @@
         </dependency>
 
         <dependency>
+            <groupId>no.difi.skos-ap-no</groupId>
+            <artifactId>concept-builder</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>3.8.0</version>
+            <version>${jena.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>log4j</artifactId>
@@ -73,7 +81,7 @@
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-core</artifactId>
-            <version>3.8.0</version>
+            <version>${jena.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>log4j</artifactId>
