@@ -96,7 +96,8 @@ public class JiraExtractor {
                 int totalFetched = 0;
 
                 ModellBuilder modellBuilder = ModellBuilder.builder();
-                BegrepssamlingBuilder begrepssamlingBuilder = modellBuilder.begrepssamlingBuilder(BEGREP_COLLECTION_URI);
+                BegrepssamlingBuilder begrepssamlingBuilder = modellBuilder.begrepssamlingBuilder(BEGREP_COLLECTION_URI,
+                        ANSVARLIG_VIRKSOMHET_ORGNR!=null && !ANSVARLIG_VIRKSOMHET_ORGNR.isEmpty() ? ANSVARLIG_VIRKSOMHET_ORGNR : DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR);
 
                 do {
                     String url = MessageFormat.format(JIRA_URL, JIRA_MAX_RESULTS, startAt);
@@ -161,8 +162,7 @@ public class JiraExtractor {
         }
 
         BegrepBuilder begrepBuilder = begrepssamlingBuilder.begrepBuilder(MessageFormat.format(BEGREP_URI, idNode.asText()))
-                .identifikator(MessageFormat.format(JIRA_URI, idNode.asText()))
-                .ansvarligVirksomhet(ANSVARLIG_VIRKSOMHET_ORGNR!=null && !ANSVARLIG_VIRKSOMHET_ORGNR.isEmpty() ? ANSVARLIG_VIRKSOMHET_ORGNR : DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR);
+                .identifikator(MessageFormat.format(JIRA_URI, idNode.asText()));
 
         DefinisjonBuilder definisjonBuilder = null;
         KontaktpunktBuilder kontaktpunktBuilder = null;
