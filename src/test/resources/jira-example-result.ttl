@@ -19,10 +19,11 @@
 @prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 
 <http://data.brreg.no/begrep>
-        a              skos:Collection ;
-        rdfs:label     "begrepssamling" ;
-        dct:publisher  <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> ;
-        skos:member    <http://data.brreg.no/begrep/57994> .
+        a               skos:Collection ;
+        rdfs:label      "begrepssamling" ;
+        dct:identifier  "http://data.brreg.no/begrep" ;
+        dct:publisher   <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> ;
+        skos:member     <http://data.brreg.no/begrep/57994> .
 
 <http://data.brreg.no/begrep/57994>
         a                             skos:Concept ;
