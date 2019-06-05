@@ -20,6 +20,7 @@
 
 <http://data.brreg.no/begrep>
         a              skos:Collection ;
+        rdfs:label     "begrepssamling" ;
         dct:publisher  <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> ;
         skos:member    <http://data.brreg.no/begrep/57994> .
 

@@ -35,6 +35,7 @@ public class JiraExtractor {
     private static Logger LOGGER = LoggerFactory.getLogger(JiraExtractor.class);
 
     private static final String BEGREP_COLLECTION_URI = "http://data.brreg.no/begrep";
+    private static final String BEGREP_COLLECTION_NAME = "begrepssamling";
     private static final String BEGREP_URI = BEGREP_COLLECTION_URI + "/{0}";
     private static final String JIRA_URI = getEnvOrDefault("JIRA_URI", "https://jira.brreg.no/rest/api/2/issue/{0}");
 
@@ -95,9 +96,9 @@ public class JiraExtractor {
                 int currentFetched = 0;
                 int totalFetched = 0;
 
-                ModellBuilder modellBuilder = ModellBuilder.builder();
-                BegrepssamlingBuilder begrepssamlingBuilder = modellBuilder.begrepssamlingBuilder(BEGREP_COLLECTION_URI,
-                        ANSVARLIG_VIRKSOMHET_ORGNR!=null && !ANSVARLIG_VIRKSOMHET_ORGNR.isEmpty() ? ANSVARLIG_VIRKSOMHET_ORGNR : DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR);
+                BegrepssamlingBuilder begrepssamlingBuilder = ModellBuilder.builder().begrepssamlingBuilder(BEGREP_COLLECTION_URI);
+                begrepssamlingBuilder.navn(BEGREP_COLLECTION_NAME);
+                begrepssamlingBuilder.ansvarligVirksomhet(ANSVARLIG_VIRKSOMHET_ORGNR!=null && !ANSVARLIG_VIRKSOMHET_ORGNR.isEmpty() ? ANSVARLIG_VIRKSOMHET_ORGNR : DEFAULT_ANSVARLIG_VIRKSOMHET_ORGNR);
 
                 do {
                     String url = MessageFormat.format(JIRA_URL, JIRA_MAX_RESULTS, startAt);
@@ -140,7 +141,7 @@ public class JiraExtractor {
 
                 LOGGER.info("Finished fetching " + totalFetched + " begrep from Jira");
 
-                Model model = modellBuilder.build();
+                Model model = begrepssamlingBuilder.build().build();
 
                 dumpModel(model, BegrepController.JSON_MIMETYPE);
                 dumpModel(model, BegrepController.RDF_MIMETYPE);
@@ -165,7 +166,7 @@ public class JiraExtractor {
                 .identifikator(MessageFormat.format(JIRA_URI, idNode.asText()));
 
         DefinisjonBuilder definisjonBuilder = null;
-        KontaktpunktBuilder kontaktpunktBuilder = null;
+        KontaktpunktBegrepBuilder kontaktpunktBuilder = null;
         KildeBuilder kildeBuilder = null;
 
         for (Map.Entry<String, Mapping> fieldMappingEntry : fieldMappings.entrySet()) {
