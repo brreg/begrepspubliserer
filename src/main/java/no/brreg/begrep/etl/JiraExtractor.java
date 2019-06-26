@@ -190,16 +190,16 @@ public class JiraExtractor {
             String language = fieldMapping.getLanguage();
 
             if ("Begrep.anbefaltTerm".equals(fieldValue)) {
-                begrepBuilder.anbefaltTerm(stripJiraLinks(fieldNode.asText()), language);
+                begrepBuilder.anbefaltTermBuilder().term(stripJiraLinks(fieldNode.asText()), language).build();
             } else if ("Begrep.definisjon".equals(fieldValue)) {
                 if (definisjonBuilder == null) {
                     definisjonBuilder = begrepBuilder.definisjonBuilder();
                 }
                 definisjonBuilder.tekst(stripJiraLinks(fieldNode.asText()), language).build();
             } else if ("Begrep.tillattTerm".equals(fieldValue)) {
-                begrepBuilder.tillattTerm(stripJiraLinks(fieldNode.asText()), language);
+                begrepBuilder.tillattTermBuilder().term(stripJiraLinks(fieldNode.asText()), language).build();
             } else if ("Begrep.frarådetTerm".equals(fieldValue)) {
-                begrepBuilder.frarådetTerm(stripJiraLinks(fieldNode.asText()), language);
+                begrepBuilder.frarådetTermBuilder().term(stripJiraLinks(fieldNode.asText()), language).build();
             } else if ("Begrep.fagområde.tekst".equals(fieldValue)) {
                 begrepBuilder.fagområde(stripJiraLinks(fieldNode.asText()), language);
             } else if ("Betydningsbeskrivelse.kilde.tekst".equals(fieldValue)) {
