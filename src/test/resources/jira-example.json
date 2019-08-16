@@ -150,7 +150,7 @@
                 "customfield_14006": null,
                 "customfield_14518": {
                     "self": "https://jira.brreg.no/rest/api/2/customFieldOption/12652",
-                    "value": "informasjonsforvaltning@brreg.no",
+                    "value": "informasjonsforvaltning@brreg.no}",
                     "id": "12652",
                     "child": {
                         "self": "https://jira.brreg.no/rest/api/2/customFieldOption/12653",
