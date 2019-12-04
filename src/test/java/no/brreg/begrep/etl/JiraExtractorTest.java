@@ -32,17 +32,6 @@ public class JiraExtractorTest {
         return new InputStreamReader(getClass().getClassLoader().getResourceAsStream(resourceName), StandardCharsets.UTF_8);
     }
 
-    private String resourceAsString(final String resourceName) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (Reader reader = new BufferedReader(resourceAsReader(resourceName))) {
-            int ch;
-            while ((ch = reader.read()) != -1) {
-                sb.append((char) ch);
-            }
-        }
-        return sb.toString();
-    }
-
     @SuppressWarnings({"unchecked"})
     @Test
     public void extractBegrep() throws ExtractException, IOException {

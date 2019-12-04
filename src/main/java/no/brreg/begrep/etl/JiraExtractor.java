@@ -6,6 +6,12 @@ import no.brreg.begrep.Application;
 import no.brreg.begrep.controller.BegrepController;
 import no.brreg.begrep.exceptions.ExtractException;
 import no.difi.skos_ap_no.begrep.builder.*;
+import no.difi.skos_ap_no.begrep.builder.Begrepssamling.Begrep.BegrepBuilder;
+import no.difi.skos_ap_no.begrep.builder.Begrepssamling.Begrep.Betydningsbeskrivelse.Definisjon.DefinisjonBuilder;
+import no.difi.skos_ap_no.begrep.builder.Begrepssamling.Begrep.Betydningsbeskrivelse.Definisjon.Kildebeskrivelse.KildebeskrivelseBuilder;
+import no.difi.skos_ap_no.begrep.builder.Begrepssamling.Begrep.Betydningsbeskrivelse.Definisjon.Kildebeskrivelse.URITekst.URITekstBuilder;
+import no.difi.skos_ap_no.begrep.builder.Begrepssamling.Begrep.KontaktpunktBuilder;
+import no.difi.skos_ap_no.begrep.builder.Begrepssamling.BegrepssamlingBuilder;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
@@ -166,8 +172,9 @@ public class JiraExtractor {
                 .identifikator(MessageFormat.format(JIRA_URI, idNode.asText()));
 
         DefinisjonBuilder definisjonBuilder = null;
-        KontaktpunktBegrepBuilder kontaktpunktBuilder = null;
-        KildeBuilder kildeBuilder = null;
+        KontaktpunktBuilder kontaktpunktBuilder = null;
+        KildebeskrivelseBuilder kildebeskrivelseBuilder = null;
+        URITekstBuilder kildeBuilder = null;
 
         for (Map.Entry<String, Mapping> fieldMappingEntry : fieldMappings.entrySet()) {
             String[] fieldPaths = fieldMappingEntry.getKey().split("\\.");
@@ -206,8 +213,11 @@ public class JiraExtractor {
                 if (definisjonBuilder == null) {
                     definisjonBuilder = begrepBuilder.definisjonBuilder();
                 }
+                if (kildebeskrivelseBuilder == null) {
+                    kildebeskrivelseBuilder = definisjonBuilder.kildebeskrivelseBuilder();
+                }
                 if (kildeBuilder == null) {
-                    kildeBuilder = definisjonBuilder.kildeBuilder();
+                    kildeBuilder = kildebeskrivelseBuilder.kildeBuilder();
                 }
                 kildeBuilder.tekst(stripJiraLinks(fieldNode.asText()), language);
             } else if ("Betydningsbeskrivelse.merknad.tekst".equals(fieldValue)) {
@@ -232,6 +242,10 @@ public class JiraExtractor {
 
         if (kildeBuilder != null) {
             kildeBuilder.build();
+        }
+
+        if (kildebeskrivelseBuilder != null) {
+            kildebeskrivelseBuilder.build();
         }
 
         if (kontaktpunktBuilder != null) {
