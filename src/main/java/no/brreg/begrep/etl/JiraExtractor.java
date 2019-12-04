@@ -12,6 +12,7 @@ import no.difi.skos_ap_no.begrep.builder.Begrepssamling.Begrep.Betydningsbeskriv
 import no.difi.skos_ap_no.begrep.builder.Begrepssamling.Begrep.Betydningsbeskrivelse.Definisjon.Kildebeskrivelse.URITekst.URITekstBuilder;
 import no.difi.skos_ap_no.begrep.builder.Begrepssamling.Begrep.KontaktpunktBuilder;
 import no.difi.skos_ap_no.begrep.builder.Begrepssamling.BegrepssamlingBuilder;
+import no.difi.skos_ap_no.concept.builder.generelt.ForholdTilKildeType;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
@@ -220,6 +221,27 @@ public class JiraExtractor {
                     kildeBuilder = kildebeskrivelseBuilder.kildeBuilder();
                 }
                 kildeBuilder.tekst(stripJiraLinks(fieldNode.asText()), language);
+            } else if ("Betydningsbeskrivelse.kildebeskrivelse.forholdTilKilde".equals(fieldValue)) {
+                if (definisjonBuilder == null) {
+                    definisjonBuilder = begrepBuilder.definisjonBuilder();
+                }
+                if (kildebeskrivelseBuilder == null) {
+                    kildebeskrivelseBuilder = definisjonBuilder.kildebeskrivelseBuilder();
+                }
+
+                ForholdTilKildeType.ForholdTilKilde forholdTilKilde = null;
+                String forholdTilKildeString = fieldNode.asText();
+                if ("Sitat fra kilde".equalsIgnoreCase(forholdTilKildeString)) {
+                    forholdTilKilde = ForholdTilKildeType.ForholdTilKilde.SitatFraKilde;
+                } else if ("Basert på kilde".equalsIgnoreCase(forholdTilKildeString)) {
+                    forholdTilKilde = ForholdTilKildeType.ForholdTilKilde.BasertPåKilde;
+                } else if ("Egendefinert".equalsIgnoreCase(forholdTilKildeString)) {
+                    forholdTilKilde = ForholdTilKildeType.ForholdTilKilde.Egendefinert;
+                }
+
+                if (forholdTilKilde != null) {
+                    kildebeskrivelseBuilder.forholdTilKilde(forholdTilKilde);
+                }
             } else if ("Betydningsbeskrivelse.merknad.tekst".equals(fieldValue)) {
                 if (definisjonBuilder == null) {
                     definisjonBuilder = begrepBuilder.definisjonBuilder();

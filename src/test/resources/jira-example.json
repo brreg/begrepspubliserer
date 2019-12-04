@@ -277,6 +277,11 @@
                     }
                 ],
                 "customfield_13900": null,
+                "customfield_15610": {
+                    "self": "https://jira.brreg.no/rest/api/2/customFieldOption/13793",
+                    "value": "Basert på kilde",
+                    "id": "13793"
+                },
                 "environment": null,
                 "duedate": null
             }

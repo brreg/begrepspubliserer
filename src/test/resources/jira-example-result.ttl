@@ -27,10 +27,11 @@
 
 <http://data.brreg.no/begrep/57994>
         a                             skos:Concept ;
-        skosno:betydningsbeskrivelse  [ a               skosno:Definisjon ;
-                                        rdfs:label      "overførsel i økonomisk sammenheng fra en part til en annen"@nb , "customfield_12501"@nn ;
-                                        dct:source      [ rdfs:label  "Visma eAccounting [Internett]_._ Tilgjengelig fra [http://www.visma.no/eaccounting/regnskapsordbok/t/transaksjon] [Lest 21. juni 2018].\r\n\r\n "@nb ] ;
-                                        skos:scopeNote  "For eksempel når en vare eller tjeneste byttes mot penger ved kjøp og salg, eller utbetaling av lønn."@nb
+        skosno:betydningsbeskrivelse  [ a                       skosno:Definisjon ;
+                                        rdfs:label              "overførsel i økonomisk sammenheng fra en part til en annen"@nb , "customfield_12501"@nn ;
+                                        skosno:forholdTilKilde  skosno:basertPåKilde ;
+                                        dct:source              [ rdfs:label  "Visma eAccounting [Internett]_._ Tilgjengelig fra [http://www.visma.no/eaccounting/regnskapsordbok/t/transaksjon] [Lest 21. juni 2018].\r\n\r\n "@nb ] ;
+                                        skos:scopeNote          "For eksempel når en vare eller tjeneste byttes mot penger ved kjøp og salg, eller utbetaling av lønn."@nb
                                       ] ;
         dct:identifier                "https://jira.brreg.no/rest/api/2/issue/57994" ;
         dct:publisher                 <https://data.brreg.no/enhetsregisteret/api/enheter/974760673> ;

@@ -9,3 +9,4 @@ fields.customfield_13101=Betydningsbeskrivelse.kilde.tekst@nb
 fields.customfield_14518.value=Begrep.kontaktpunkt.epost
 fields.customfield_14518.child.value=Begrep.kontaktpunkt.tlf
 fields.customfield_14900=Begrep.eksempel.tekst@no
+fields.customfield_15610.value=Betydningsbeskrivelse.kildebeskrivelse.forholdTilKilde
