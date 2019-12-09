@@ -26,6 +26,8 @@ public class BegrepController {
     private static final MimeType DEFAULT_MIMETYPE = MimeType.valueOf("text/plain");
     private static final String DEFAULT_TEXT = "Please use Accept:-header with mime-type '"+JSON_MIMETYPE+"', '"+RDF_MIMETYPE+"' or '"+TURTLE_MIMETYPE+"'";
 
+    private static final int PARAM_PAIR_LENGTH = 2;
+
 
     @RequestMapping(value="/ping", method=GET, produces={"text/plain"})
     public ResponseEntity<String> getPing() {
@@ -102,7 +104,7 @@ public class BegrepController {
                     }
 
                     String[] acceptExtension = acceptParams.split("=");
-                    if (acceptExtension!=null && acceptExtension.length==2 && "q".equals(acceptExtension[0].trim())) {
+                    if (acceptExtension!=null && acceptExtension.length==PARAM_PAIR_LENGTH && "q".equals(acceptExtension[0].trim())) {
                         try {
                             quality = Double.valueOf(acceptExtension[1]);
                         } catch (NumberFormatException e) {

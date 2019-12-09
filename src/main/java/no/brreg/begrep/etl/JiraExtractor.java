@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 
-@SuppressWarnings({"squid:S00103"})
+@SuppressWarnings({"squid:S00103", "squid:S1200", "common-java:InsufficientBranchCoverage"})
 public class JiraExtractor {
     private static Logger LOGGER = LoggerFactory.getLogger(JiraExtractor.class);
 
@@ -163,6 +163,7 @@ public class JiraExtractor {
         }
     }
 
+    @SuppressWarnings({"squid:MethodCyclomaticComplexity", "squid:S138"})
     private BegrepssamlingBuilder addBegrepToCollection(final BegrepssamlingBuilder begrepssamlingBuilder, final JsonNode jsonNode) {
         JsonNode idNode = jsonNode.findValue("id");
         if (idNode == null || idNode.isNull()) {
