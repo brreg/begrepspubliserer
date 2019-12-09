@@ -57,10 +57,13 @@
             <version>1.0.0</version>
         </dependency>
 
+        <!-- The local jar for https://github.com/difi/skos-ap-no-tools.git -->
         <dependency>
             <groupId>no.difi.skos-ap-no</groupId>
             <artifactId>concept-builder</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>1.0.2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/concept-builder-1.0.2.jar</systemPath>
         </dependency>
 
         <dependency>
