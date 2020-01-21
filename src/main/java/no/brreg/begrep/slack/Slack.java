@@ -12,8 +12,8 @@ public class Slack {
     public static final String PRODFEIL_CHANNEL = "#prodfeil";
 
 
-    public static ChatPostMessageResponse postMessage(final String channel, final String message) {
-        SlackClient slackClient = BasicRuntimeConfig.getClient();
+    public ChatPostMessageResponse postMessage(final String channel, final String message) {
+        SlackClient slackClient = getClient();
         if (slackClient == null) {
             return null;
         }
@@ -26,6 +26,10 @@ public class Slack {
             ).join();
 
         return postResult.unwrapOrElseThrow();
+    }
+
+    SlackClient getClient() {
+        return BasicRuntimeConfig.getClient();
     }
 
 }

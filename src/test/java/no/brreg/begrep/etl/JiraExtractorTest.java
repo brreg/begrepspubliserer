@@ -12,7 +12,9 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,11 @@ public class JiraExtractorTest {
 
     private Reader resourceAsReader(final String resourceName) {
         return new InputStreamReader(getClass().getClassLoader().getResourceAsStream(resourceName), StandardCharsets.UTF_8);
+    }
+
+    @BeforeEach
+    void resetMocks() {
+        Mockito.reset();
     }
 
     @SuppressWarnings({"unchecked"})
@@ -59,6 +66,36 @@ public class JiraExtractorTest {
         if (!resultModel.isIsomorphicWith(fasitModel)) {
             Assert.fail("\nModels are not isomorphic. Got actual:\n" + application.getBegrepDump(BegrepController.TURTLE_MIMETYPE));
         }
+    }
+
+    @Test(expected = ExtractException.class)
+    public void extractBegrepLoadMappingsFail() throws IOException, ExtractException {
+        Application application = new Application();
+        JiraExtractor jiraExtractorSpy = spy(new JiraExtractor(application));
+
+        RestTemplate restTemplateMock = mock(RestTemplate.class);
+        when(jiraExtractorSpy.createRestTemplate()).thenReturn(restTemplateMock);
+
+        doThrow(IOException.class).when(jiraExtractorSpy).loadMappings();
+
+        jiraExtractorSpy.extract();
+
+        verify(restTemplateMock, never()).exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)); //Should not get to exchange(...)
+    }
+
+    @Test(expected = ExtractException.class)
+    public void extractBegrepRestTemplateExchangeFails() throws ExtractException {
+        Application application = new Application();
+        JiraExtractor jiraExtractorSpy = spy(new JiraExtractor(application));
+
+        RestTemplate restTemplateMock = mock(RestTemplate.class);
+        when(jiraExtractorSpy.createRestTemplate()).thenReturn(restTemplateMock);
+
+        ResponseEntity<ObjectNode> responseEntityMock = mock(ResponseEntity.class);
+        when(restTemplateMock.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntityMock);
+        when(responseEntityMock.getStatusCode()).thenReturn(HttpStatus.resolve(501));
+
+        jiraExtractorSpy.extract();
     }
 
     @Test

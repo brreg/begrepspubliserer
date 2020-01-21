@@ -64,9 +64,7 @@ public class JiraExtractor {
     private final Application application;
 
 
-    private JiraExtractor() {
-        this.application = null;
-    }
+    private JiraExtractor() { this.application = null; }
 
     public JiraExtractor(final Application application) {
         this.application = application;
@@ -301,7 +299,7 @@ public class JiraExtractor {
         return format;
     }
 
-    private void loadMappings() throws IOException {
+    void loadMappings() throws IOException {
         fieldMappings = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("mapping.txt"), StandardCharsets.UTF_8))) {
             String s;
@@ -321,7 +319,8 @@ public class JiraExtractor {
         }
     }
 
-    RestTemplate createRestTemplate() { //For mock/spy in tests
+    //For mock/spy in tests
+    RestTemplate createRestTemplate() {
         return new RestTemplate();
     }
 

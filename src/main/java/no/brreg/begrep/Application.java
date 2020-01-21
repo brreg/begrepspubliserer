@@ -33,7 +33,7 @@ public class Application {
         try {
             extractor.extract();
         } catch (ExtractException e) {
-            Slack.postMessage(Slack.PRODFEIL_CHANNEL, "begrep-jira-adaptor: Exception when extracting from Jira: " + e.getMessage());
+            new Slack().postMessage(Slack.PRODFEIL_CHANNEL, "begrep-jira-adaptor: Exception when extracting from Jira: " + e.getMessage());
         }
     }
 
