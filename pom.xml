@@ -107,6 +107,18 @@
             <version>1.13</version>
         </dependency>
 
+        <!-- Slack client -->
+        <dependency>
+            <groupId>com.hubspot.slack</groupId>
+            <artifactId>slack-base</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hubspot.slack</groupId>
+            <artifactId>slack-java-client</artifactId>
+            <version>1.4</version>
+        </dependency>
+
         <!-- TEST -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
