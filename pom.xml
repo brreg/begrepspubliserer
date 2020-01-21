@@ -4,13 +4,13 @@
 
     <groupId>no.brreg</groupId>
     <artifactId>begrepspubliserer</artifactId>
-    <version>1.0.13</version>
+    <version>1.0.14</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.1.RELEASE</version>
+        <version>2.2.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -30,7 +30,7 @@
         <maven.exec.skip>false</maven.exec.skip>
         <!--end standard properties-->
 
-        <jena.version>3.13.1</jena.version>
+        <jena.version>3.14.0</jena.version>
 
         <sonar.host.url>http://sonar1.brreg.no:9000</sonar.host.url>
         <sonar.maven.version>6.2</sonar.maven.version>
