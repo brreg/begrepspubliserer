@@ -2,6 +2,7 @@ package no.brreg.begrep;
 
 import no.brreg.begrep.etl.JiraExtractor;
 import no.brreg.begrep.exceptions.ExtractException;
+import no.brreg.begrep.slack.Slack;
 import no.brreg.spring.actuator.prometheus.EnablePrometheusEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,13 @@ public class Application {
 
 
     @Scheduled(fixedRate = 6*60*60*1000L, initialDelay = 0L)
-    public void scheduledExtractFromJira() throws ExtractException {
+    public void scheduledExtractFromJira() {
         LOGGER.debug("Scheduled job triggered");
-        extractor.extract();
+        try {
+            extractor.extract();
+        } catch (ExtractException e) {
+            new Slack().postMessage(Slack.PRODFEIL_CHANNEL, "begrep-jira-adaptor: Exception when extracting from Jira: " + e.getMessage());
+        }
     }
 
     public static void updateBegrepDump(final MimeType type, final String dump) {
