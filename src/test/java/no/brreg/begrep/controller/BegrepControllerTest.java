@@ -61,15 +61,7 @@ public class BegrepControllerTest {
         Assert.assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
         Assert.assertEquals("pong", response.getBody());
     }
-/*
-    @Test
-    public void testReadyWhenNotReady() {
-        BegrepController begrepController = new BegrepController();
-        ResponseEntity response = begrepController.getReady();
-        Assert.assertEquals(HttpStatus.SERVICE_UNAVAILABLE.value(), response.getStatusCodeValue());
 
-    }
- */
     @Test
     public void testGetBegreperNoMimeType() {
         BegrepController begrepController = new BegrepController();
@@ -87,12 +79,5 @@ public class BegrepControllerTest {
         final String expected = "Please use Accept:-header with mime-type";
         Assert.assertEquals(expected, response.getBody().substring(0, expected.length()));
     }
-/*
-    @Test
-    public void testGetBegreperTextTurtleNotReady() {
-        BegrepController begrepController = new BegrepController();
-        ResponseEntity<String> response = begrepController.getBegreper("text/turtle");
-        Assert.assertEquals(HttpStatus.SERVICE_UNAVAILABLE.value(), response.getStatusCodeValue());
-    }
-*/
+
 }
