@@ -78,7 +78,7 @@ public class BegrepControllerTest {
         final String expected = "Please use Accept:-header with mime-type";
         Assert.assertEquals(expected, response.getBody().substring(0, expected.length()));
     }
-/*
+
     @Test
     public void testGetBegreperNullMimeType() {
         BegrepController begrepController = new BegrepController();
@@ -87,7 +87,7 @@ public class BegrepControllerTest {
         final String expected = "Please use Accept:-header with mime-type";
         Assert.assertEquals(expected, response.getBody().substring(0, expected.length()));
     }
-
+/*
     @Test
     public void testGetBegreperTextTurtleNotReady() {
         BegrepController begrepController = new BegrepController();
