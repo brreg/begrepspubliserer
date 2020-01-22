@@ -4,7 +4,7 @@
 
     <groupId>no.brreg</groupId>
     <artifactId>begrepspubliserer</artifactId>
-    <version>1.0.16</version>
+    <version>1.0.17-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
