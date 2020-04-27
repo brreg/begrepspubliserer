@@ -258,6 +258,25 @@ public class JiraExtractor {
                 kontaktpunktBuilder.telefon(fieldNode.asText());
             } else if ("Begrep.eksempel.tekst".equals(fieldValue)) {
                 begrepBuilder.eksempel(stripJiraLinks(fieldNode.asText()), language);
+            } else if ("Begrep.issueLinks".equals(fieldValue)) {
+                //Hardcoding finding RelatesTo here
+                for (Iterator<JsonNode> it = fieldNode.elements(); it.hasNext(); ) {
+                    JsonNode arrayNode = it.next();
+
+                    JsonNode typeNode = arrayNode.get("type");
+                    if (typeNode != null) {
+                        for (Boolean inward = true; inward != null; inward = (inward == true) ? false : null) { //simple state-machine
+                            final String typeName = inward ? "inward" : "outward";
+                            if (typeNode.has(typeName) && "relates to".equals(typeNode.get(typeName).textValue())) {
+                                JsonNode issueNode = arrayNode.get(inward ? "inwardIssue" : "outwardIssue");
+                                if (issueNode!=null &&
+                                    issueNode.has("self")) {
+                                    begrepBuilder.seOgså(issueNode.get("self").textValue());
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
