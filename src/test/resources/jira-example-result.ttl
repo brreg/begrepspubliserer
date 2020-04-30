@@ -27,6 +27,7 @@
 
 <http://data.brreg.no/begrep/57994>
         a                             skos:Concept ;
+        rdfs:seeAlso                  "https://jira.brreg.no/rest/api/2/issue/48068" , "https://jira.brreg.no/rest/api/2/issue/48062" ;
         skosno:betydningsbeskrivelse  [ a                       skosno:Definisjon ;
                                         rdfs:label              "overførsel i økonomisk sammenheng fra en part til en annen"@nb , "customfield_12501"@nn ;
                                         skosno:forholdTilKilde  skosno:basertPåKilde ;

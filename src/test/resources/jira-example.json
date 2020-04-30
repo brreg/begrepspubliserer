@@ -59,7 +59,152 @@
                 "aggregatetimeoriginalestimate": null,
                 "timeestimate": null,
                 "versions": [],
-                "issuelinks": [],
+                "issuelinks": [
+                    {
+                        "id": "45066",
+                        "self": "https://jira.brreg.no/rest/api/2/issueLink/45066",
+                        "type": {
+                            "id": "10500",
+                            "name": "Begrep: overordnet underordnet",
+                            "inward": "overordnet begrep",
+                            "outward": "underordnet begrep",
+                            "self": "https://jira.brreg.no/rest/api/2/issueLinkType/10500"
+                        },
+                        "inwardIssue": {
+                            "id": "40660",
+                            "key": "BEGREP-77",
+                            "self": "https://jira.brreg.no/rest/api/2/issue/40660",
+                            "fields": {
+                                "summary": "term",
+                                "status": {
+                                    "self": "https://jira.brreg.no/rest/api/2/status/10716",
+                                    "description": "Godkjent",
+                                    "iconUrl": "https://jira.brreg.no/images/icons/statuses/generic.png",
+                                    "name": "Godkjent",
+                                    "id": "10716",
+                                    "statusCategory": {
+                                        "self": "https://jira.brreg.no/rest/api/2/statuscategory/3",
+                                        "id": 3,
+                                        "key": "done",
+                                        "colorName": "green",
+                                        "name": "Utført"
+                                    }
+                                },
+                                "priority": {
+                                    "self": "https://jira.brreg.no/rest/api/2/priority/6",
+                                    "iconUrl": "https://jira.brreg.no/images/icons/priority_major.gif",
+                                    "name": "Normal",
+                                    "id": "6"
+                                },
+                                "issuetype": {
+                                    "self": "https://jira.brreg.no/rest/api/2/issuetype/10301",
+                                    "id": "10301",
+                                    "description": "Begrep",
+                                    "iconUrl": "https://jira.brreg.no/secure/viewavatar?size=xsmall&avatarId=11300&avatarType=issuetype",
+                                    "name": "Begrep",
+                                    "subtask": false,
+                                    "avatarId": 11300
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "45068",
+                        "self": "https://jira.brreg.no/rest/api/2/issueLink/45068",
+                        "type": {
+                            "id": "10003",
+                            "name": "Relates",
+                            "inward": "relates to",
+                            "outward": "relates to",
+                            "self": "https://jira.brreg.no/rest/api/2/issueLinkType/10003"
+                        },
+                        "outwardIssue": {
+                            "id": "48068",
+                            "key": "BEGREP-297",
+                            "self": "https://jira.brreg.no/rest/api/2/issue/48068",
+                            "fields": {
+                                "summary": "alternativ term",
+                                "status": {
+                                    "self": "https://jira.brreg.no/rest/api/2/status/10716",
+                                    "description": "Godkjent",
+                                    "iconUrl": "https://jira.brreg.no/images/icons/statuses/generic.png",
+                                    "name": "Godkjent",
+                                    "id": "10716",
+                                    "statusCategory": {
+                                        "self": "https://jira.brreg.no/rest/api/2/statuscategory/3",
+                                        "id": 3,
+                                        "key": "done",
+                                        "colorName": "green",
+                                        "name": "Utført"
+                                    }
+                                },
+                                "priority": {
+                                    "self": "https://jira.brreg.no/rest/api/2/priority/6",
+                                    "iconUrl": "https://jira.brreg.no/images/icons/priority_major.gif",
+                                    "name": "Normal",
+                                    "id": "6"
+                                },
+                                "issuetype": {
+                                    "self": "https://jira.brreg.no/rest/api/2/issuetype/10301",
+                                    "id": "10301",
+                                    "description": "Begrep",
+                                    "iconUrl": "https://jira.brreg.no/secure/viewavatar?size=xsmall&avatarId=11300&avatarType=issuetype",
+                                    "name": "Begrep",
+                                    "subtask": false,
+                                    "avatarId": 11300
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "42334",
+                        "self": "https://jira.brreg.no/rest/api/2/issueLink/42334",
+                        "type": {
+                            "id": "10003",
+                            "name": "Relates",
+                            "inward": "relates to",
+                            "outward": "relates to",
+                            "self": "https://jira.brreg.no/rest/api/2/issueLinkType/10003"
+                        },
+                        "inwardIssue": {
+                            "id": "48062",
+                            "key": "BEGREP-295",
+                            "self": "https://jira.brreg.no/rest/api/2/issue/48062",
+                            "fields": {
+                                "summary": "anbefalt term",
+                                "status": {
+                                    "self": "https://jira.brreg.no/rest/api/2/status/10716",
+                                    "description": "Godkjent",
+                                    "iconUrl": "https://jira.brreg.no/images/icons/statuses/generic.png",
+                                    "name": "Godkjent",
+                                    "id": "10716",
+                                    "statusCategory": {
+                                        "self": "https://jira.brreg.no/rest/api/2/statuscategory/3",
+                                        "id": 3,
+                                        "key": "done",
+                                        "colorName": "green",
+                                        "name": "Utført"
+                                    }
+                                },
+                                "priority": {
+                                    "self": "https://jira.brreg.no/rest/api/2/priority/6",
+                                    "iconUrl": "https://jira.brreg.no/images/icons/priority_major.gif",
+                                    "name": "Normal",
+                                    "id": "6"
+                                },
+                                "issuetype": {
+                                    "self": "https://jira.brreg.no/rest/api/2/issuetype/10301",
+                                    "id": "10301",
+                                    "description": "Begrep",
+                                    "iconUrl": "https://jira.brreg.no/secure/viewavatar?size=xsmall&avatarId=11300&avatarType=issuetype",
+                                    "name": "Begrep",
+                                    "subtask": false,
+                                    "avatarId": 11300
+                                }
+                            }
+                        }
+                    }
+                ],
                 "assignee": {
                     "self": "https://jira.brreg.no/rest/api/2/user?username=ini",
                     "name": "ini",
