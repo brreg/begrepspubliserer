@@ -17,7 +17,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
-import org.hobsoft.spring.resttemplatelogger.LoggingCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -26,6 +25,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.MimeType;
 import org.springframework.web.client.RestTemplate;
 
@@ -118,7 +118,6 @@ public class JiraExtractor {
                             new ParameterizedTypeReference<ObjectNode>() {
                             });
 
-                    LOGGER.info("Got status " + response.getStatusCodeValue());
                     if (!response.getStatusCode().is2xxSuccessful()) {
                         throw new ExtractException("RestTemplate exception: " + response.getStatusCode().toString() + " " + response.getStatusCode().getReasonPhrase());
                     }
@@ -346,11 +345,13 @@ public class JiraExtractor {
 
     //For mock/spy in tests
     RestTemplate createRestTemplate() {
-        return new RestTemplateBuilder()
+        RestTemplate restTemplate = new RestTemplateBuilder()
                 .setConnectTimeout(Duration.ofSeconds(60))
                 .setReadTimeout(Duration.ofSeconds(60))
-                .customizers(new LoggingCustomizer())
                 .build();
+
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+        return restTemplate;
     }
 
 }

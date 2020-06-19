@@ -2,7 +2,7 @@ logging:
   level.: ERROR
   level.org.springframework: ERROR
   level.org.springframework.web: ERROR
-  level.org.hobsoft.spring.resttemplatelogger.LoggingCustomizer: DEBUG
+  level.org.apache.http: DEBUG
 server:
   servlet:
     context-path: "/begrep/"
