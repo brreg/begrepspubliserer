@@ -4,7 +4,7 @@
 
     <groupId>no.brreg</groupId>
     <artifactId>begrepspubliserer</artifactId>
-    <version>1.0.18</version>
+    <version>1.0.19</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -117,6 +117,13 @@
             <groupId>com.hubspot.slack</groupId>
             <artifactId>slack-java-client</artifactId>
             <version>1.4</version>
+        </dependency>
+
+        <!-- Debug logging -->
+        <dependency>
+            <groupId>org.hobsoft.spring</groupId>
+            <artifactId>spring-rest-template-logger</artifactId>
+            <version>2.0.0</version>
         </dependency>
 
         <!-- TEST -->

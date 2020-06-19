@@ -17,8 +17,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
+import org.hobsoft.spring.resttemplatelogger.LoggingCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -115,6 +118,7 @@ public class JiraExtractor {
                             new ParameterizedTypeReference<ObjectNode>() {
                             });
 
+                    LOGGER.info("Got status " + response.getStatusCodeValue());
                     if (!response.getStatusCode().is2xxSuccessful()) {
                         throw new ExtractException("RestTemplate exception: " + response.getStatusCode().toString() + " " + response.getStatusCode().getReasonPhrase());
                     }
@@ -152,8 +156,10 @@ public class JiraExtractor {
                 dumpModel(model, BegrepController.RDF_MIMETYPE);
                 dumpModel(model, BegrepController.TURTLE_MIMETYPE);
             } catch (ExtractException e) {
+                LOGGER.error("Got ExtractException " + e.getMessage());
                 throw e;
             } catch (Exception e) {
+                LOGGER.error("Got Exception " + e.getMessage());
                 throw new ExtractException("Extract exception: " + e.getMessage(), e);
             } finally {
                 isExtracting.set(false);
@@ -340,7 +346,11 @@ public class JiraExtractor {
 
     //For mock/spy in tests
     RestTemplate createRestTemplate() {
-        return new RestTemplate();
+        return new RestTemplateBuilder()
+                .setConnectTimeout(Duration.ofSeconds(60))
+                .setReadTimeout(Duration.ofSeconds(60))
+                .customizers(new LoggingCustomizer())
+                .build();
     }
 
 }
