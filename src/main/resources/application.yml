@@ -2,7 +2,7 @@ logging:
   level.: ERROR
   level.org.springframework: ERROR
   level.org.springframework.web: ERROR
-  level.org.apache.http: DEBUG
+  level.org.apache.http: ERROR
 server:
   servlet:
     context-path: "/begrep/"

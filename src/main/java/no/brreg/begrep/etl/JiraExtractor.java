@@ -155,10 +155,8 @@ public class JiraExtractor {
                 dumpModel(model, BegrepController.RDF_MIMETYPE);
                 dumpModel(model, BegrepController.TURTLE_MIMETYPE);
             } catch (ExtractException e) {
-                LOGGER.error("Got ExtractException " + e.getMessage());
                 throw e;
             } catch (Exception e) {
-                LOGGER.error("Got Exception " + e.getMessage());
                 throw new ExtractException("Extract exception: " + e.getMessage(), e);
             } finally {
                 isExtracting.set(false);
