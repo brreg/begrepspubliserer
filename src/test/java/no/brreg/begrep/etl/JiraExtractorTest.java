@@ -10,15 +10,14 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RIOT;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
@@ -27,7 +26,7 @@ import java.nio.charset.StandardCharsets;
 import static org.mockito.Mockito.*;
 
 
-@RunWith(SpringRunner.class)
+@SpringBootTest
 public class JiraExtractorTest {
 
     private Reader resourceAsReader(final String resourceName) {
@@ -64,38 +63,42 @@ public class JiraExtractorTest {
         fasitModel.read(resourceAsReader("jira-example-result.ttl"), "", BegrepController.TURTLE_MIMETYPE.toString());
 
         if (!resultModel.isIsomorphicWith(fasitModel)) {
-            Assert.fail("\nModels are not isomorphic. Got actual:\n" + application.getBegrepDump(BegrepController.TURTLE_MIMETYPE));
+            Assertions.fail("\nModels are not isomorphic. Got actual:\n" + application.getBegrepDump(BegrepController.TURTLE_MIMETYPE));
         }
     }
 
-    @Test(expected = ExtractException.class)
-    public void extractBegrepLoadMappingsFail() throws IOException, ExtractException {
-        Application application = new Application();
-        JiraExtractor jiraExtractorSpy = spy(new JiraExtractor(application));
+    @Test
+    public void extractBegrepLoadMappingsFail() {
+        Assertions.assertThrows(ExtractException.class, () -> {
+            Application application = new Application();
+            JiraExtractor jiraExtractorSpy = spy(new JiraExtractor(application));
 
-        RestTemplate restTemplateMock = mock(RestTemplate.class);
-        when(jiraExtractorSpy.createRestTemplate()).thenReturn(restTemplateMock);
+            RestTemplate restTemplateMock = mock(RestTemplate.class);
+            when(jiraExtractorSpy.createRestTemplate()).thenReturn(restTemplateMock);
 
-        doThrow(IOException.class).when(jiraExtractorSpy).loadMappings();
+            doThrow(IOException.class).when(jiraExtractorSpy).loadMappings();
 
-        jiraExtractorSpy.extract();
+            jiraExtractorSpy.extract();
 
-        verify(restTemplateMock, never()).exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)); //Should not get to exchange(...)
+            verify(restTemplateMock, never()).exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)); //Should not get to exchange(...)
+        });
     }
 
-    @Test(expected = ExtractException.class)
-    public void extractBegrepRestTemplateExchangeFails() throws ExtractException {
-        Application application = new Application();
-        JiraExtractor jiraExtractorSpy = spy(new JiraExtractor(application));
+    @Test()
+    public void extractBegrepRestTemplateExchangeFails() {
+        Assertions.assertThrows(ExtractException.class, () -> {
+            Application application = new Application();
+            JiraExtractor jiraExtractorSpy = spy(new JiraExtractor(application));
 
-        RestTemplate restTemplateMock = mock(RestTemplate.class);
-        when(jiraExtractorSpy.createRestTemplate()).thenReturn(restTemplateMock);
+            RestTemplate restTemplateMock = mock(RestTemplate.class);
+            when(jiraExtractorSpy.createRestTemplate()).thenReturn(restTemplateMock);
 
-        ResponseEntity<ObjectNode> responseEntityMock = mock(ResponseEntity.class);
-        when(restTemplateMock.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntityMock);
-        when(responseEntityMock.getStatusCode()).thenReturn(HttpStatus.resolve(501));
+            ResponseEntity<ObjectNode> responseEntityMock = mock(ResponseEntity.class);
+            when(restTemplateMock.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class))).thenReturn(responseEntityMock);
+            when(responseEntityMock.getStatusCode()).thenReturn(HttpStatus.resolve(501));
 
-        jiraExtractorSpy.extract();
+            jiraExtractorSpy.extract();
+        });
     }
 
     @Test
@@ -104,12 +107,12 @@ public class JiraExtractorTest {
         Model model = ModelFactory.createDefaultModel();
         model.read(resourceAsReader("jira-example-result.ttl"), "http://data.brreg.no", "TURTLE");
 
-        Assert.assertTrue(model.contains(
+        Assertions.assertTrue(model.contains(
                 model.createResource("http://data.brreg.no/begrep/57994"),
                 RDF.type,
                 SKOS.Concept));
 
-        Assert.assertFalse(model.contains(
+        Assertions.assertFalse(model.contains(
                 model.createResource("http://data.brreg.no/begrep/57994asdf"),
                 RDF.type,
                 SKOS.Concept));

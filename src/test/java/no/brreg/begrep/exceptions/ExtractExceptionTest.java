@@ -1,26 +1,29 @@
 package no.brreg.begrep.exceptions;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 
-@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ExtractExceptionTest {
 
-    @Test(expected = ExtractException.class)
-    public void throwException() throws ExtractException {
-        throw new ExtractException("test");
+    @Test
+    public void throwException() {
+        Assertions.assertThrows(ExtractException.class, () -> {
+            throw new ExtractException("test");
+        });
     }
 
-    @Test(expected = ExtractException.class)
+    @Test
     public void throwEmbeddedException() throws ExtractException {
-        try {
-            throw new NullPointerException();
-        } catch (Exception e) {
-            throw new ExtractException("test", e);
-        }
+        Assertions.assertThrows(ExtractException.class, () -> {
+            try {
+                throw new NullPointerException();
+            } catch (Exception e) {
+                throw new ExtractException("test", e);
+            }
+        });
     }
 
     @Test
@@ -33,7 +36,7 @@ public class ExtractExceptionTest {
             }
         }
 
-        Assert.fail();
+        Assertions.fail();
     }
 
     @Test
@@ -41,7 +44,7 @@ public class ExtractExceptionTest {
         try {
             throw new ExtractException("test");
         } catch (Exception e) {
-            Assert.assertEquals("test", e.getMessage());
+            Assertions.assertEquals("test", e.getMessage());
         }
     }
 
